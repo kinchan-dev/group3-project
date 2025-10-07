@@ -1,21 +1,25 @@
-// controllers/userController.js
-let users = [
-  { id: 1, name: 'Trị', email: 'tri226320@student.nctu.edu.vn' },
-  { id: 2, name: 'Kiên', email: 'kien220415@student.nctu.edu.vn' }
-];
+const User = require('../models/User');
 
-const getUsers = (req, res) => {
-  res.status(200).json(users);
+// GET: Lấy danh sách người dùng
+const getUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ message: 'Lỗi khi lấy dữ liệu', error });
+  }
 };
 
-const createUser = (req, res) => {
-  const newUser = {
-    id: users.length + 1,
-    name: req.body.name,
-    email: req.body.email
-  };
-  users.push(newUser);
-  res.status(201).json(newUser);
+// POST: Thêm người dùng mới
+const createUser = async (req, res) => {
+  try {
+    const { name, email } = req.body;
+    const newUser = new User({ name, email });
+    await newUser.save();
+    res.status(201).json(newUser);
+  } catch (error) {
+    res.status(400).json({ message: 'Lỗi khi thêm người dùng', error });
+  }
 };
 
 module.exports = { getUsers, createUser };
