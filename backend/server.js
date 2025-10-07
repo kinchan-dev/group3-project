@@ -1,16 +1,19 @@
+require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
-const bodyParser = require('body-parser');
-const { getUsers, createUser } = require('./controllers/userController');
-
+const mongoose = require('mongoose');   // 🟢 THÊM DÒNG NÀY
 const app = express();
-app.use(cors());
-app.use(bodyParser.json());
 
-// Routes
-app.get('/users', getUsers);
-app.post('/users', createUser);
+app.use(express.json());
 
-app.listen(3000, () => {
-  console.log("Server is running on port 3000");
-});
+// Kết nối MongoDB Atlas
+mongoose.connect(process.env.MONGO_URI)
+  .then(() => console.log('✅ Kết nối MongoDB Atlas thành công'))
+  .catch(err => console.error('❌ Lỗi kết nối MongoDB:', err));
+
+// Import route
+const userRoutes = require('./routes/user');
+app.use('/users', userRoutes);
+
+// Chạy server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`🚀 Server chạy tại cổng ${PORT}`));
