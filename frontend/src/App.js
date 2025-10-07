@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import AddUser from "./AddUser"; // ✅ phải đúng đường dẫn
+import AddUser from "./AddUser"; // 
 
 function App() {
   const [users, setUsers] = useState([]);

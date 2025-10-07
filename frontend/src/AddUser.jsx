@@ -1,3 +1,4 @@
+// frontend/src/components/AddUser.jsx
 import React, { useState } from "react";
 import axios from "axios";
 
@@ -6,7 +7,7 @@ const AddUser = ({ onUserAdded }) => {
   const [email, setEmail] = useState("");
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // chặn reload trang
     if (!name || !email) return alert("Vui lòng nhập đủ tên và email!");
 
     try {
@@ -14,7 +15,7 @@ const AddUser = ({ onUserAdded }) => {
         name,
         email,
       });
-      onUserAdded(res.data);
+      onUserAdded(res.data); // gọi callback để cập nhật danh sách user ở UserList
       setName("");
       setEmail("");
     } catch (err) {
