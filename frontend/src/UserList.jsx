@@ -1,19 +1,6 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
 
-function UserList() {
-  const [users, setUsers] = useState([]);
-
-  useEffect(() => {
-    axios.get("http://localhost:3000/users")
-      .then((res) => {
-        setUsers(res.data);
-      })
-      .catch((err) => {
-        console.error("Lỗi khi gọi API:", err);
-      });
-  }, []);
-
+function UserList({ users }) {
   return (
     <div>
       <h2>Danh sách User</h2>
@@ -22,9 +9,7 @@ function UserList() {
       ) : (
         <ul>
           {users.map((u) => (
-            <li key={u.id}>
-              {u.name} - {u.email}
-            </li>
+            <li key={u._id}>{u.name} - {u.email}</li>
           ))}
         </ul>
       )}

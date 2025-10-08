@@ -7,22 +7,19 @@ const AddUser = ({ onUserAdded }) => {
   const [email, setEmail] = useState("");
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // chặn reload trang
-    if (!name || !email) return alert("Vui lòng nhập đủ tên và email!");
+  e.preventDefault(); // chặn reload trang
+  if (!name || !email) return alert("Vui lòng nhập đủ tên và email!");
 
-    try {
-      const res = await axios.post("http://localhost:3000/users", {
-        name,
-        email,
-      });
-      onUserAdded(res.data); // gọi callback để cập nhật danh sách user ở UserList
-      setName("");
-      setEmail("");
-    } catch (err) {
-      console.error(err);
-      alert("Lỗi khi thêm user!");
-    }
-  };
+  try {
+    await axios.post("http://localhost:3000/users", { name, email });
+    onUserAdded(); // 🟢 chỉ gọi callback, không truyền res.data
+    setName("");
+    setEmail("");
+  } catch (err) {
+    console.error(err);
+    alert("Lỗi khi thêm user!");
+  }
+};
 
   return (
     <form onSubmit={handleSubmit}>
