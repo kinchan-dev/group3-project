@@ -1,43 +1,61 @@
-// frontend/src/components/AddUser.jsx
 import React, { useState } from "react";
 import axios from "axios";
 
-const AddUser = ({ onUserAdded }) => {
+function AddUser({ onUserAdded }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
   const handleSubmit = async (e) => {
-  e.preventDefault(); // chặn reload trang
-  if (!name || !email) return alert("Vui lòng nhập đủ tên và email!");
+    e.preventDefault();
 
-  try {
-    await axios.post("http://localhost:3000/users", { name, email });
-    onUserAdded(); // 🟢 chỉ gọi callback, không truyền res.data
-    setName("");
-    setEmail("");
-  } catch (err) {
-    console.error(err);
-    alert("Lỗi khi thêm user!");
-  }
-};
+    // ✅ Validation
+    if (!name.trim()) {
+      alert("Name không được để trống");
+      return;
+    }
+
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      alert("Email không hợp lệ");
+      return;
+    }
+
+    try {
+      await axios.post("http://localhost:3000/users", { name, email });
+      alert("Thêm user thành công!");
+      setName("");
+      setEmail("");
+      onUserAdded(); // reload danh sách
+    } catch (err) {
+      console.error("Lỗi khi thêm user:", err);
+      alert("Lỗi khi thêm user!");
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Tên"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-      />
-      <input
-        type="email"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+      <div>
+        <label>Tên:</label>
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder="Nhập tên"
+          required
+        />
+      </div>
+      <div>
+        <label>Email:</label>
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Nhập email"
+          required
+        />
+      </div>
       <button type="submit">Thêm</button>
     </form>
   );
-};
+}
 
 export default AddUser;
