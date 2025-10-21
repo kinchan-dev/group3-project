@@ -6,10 +6,7 @@ import UserList from "./UserList";
 function App() {
   const [users, setUsers] = useState([]);
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
+  // Hàm tải danh sách user
   const fetchUsers = async () => {
     try {
       const res = await axios.get("http://localhost:3000/users");
@@ -19,17 +16,25 @@ function App() {
     }
   };
 
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  // Gọi lại khi thêm user
   const handleUserAdded = () => {
-    fetchUsers(); // gọi lại API sau khi thêm user
+    fetchUsers();
   };
 
   return (
     <div>
       <h1>Quản lý User</h1>
+
       <h2>Thêm User</h2>
       <AddUser onUserAdded={handleUserAdded} />
+
       <h2>Danh sách User</h2>
-      <UserList users={users} />
+      {/* ✅ Truyền thêm onUserUpdated vào đây */}
+      <UserList users={users} onUserUpdated={fetchUsers} />
     </div>
   );
 }

@@ -1,25 +1,29 @@
-const User = require('../models/User');
+const User = require("../models/User");
 
-// GET: Lấy danh sách người dùng
-const getUsers = async (req, res) => {
+// PUT
+exports.updateUser = async (req, res) => {
   try {
-    const users = await User.find();
-    res.status(200).json(users);
-  } catch (error) {
-    res.status(500).json({ message: 'Lỗi khi lấy dữ liệu', error });
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    if (!updatedUser)
+      return res.status(404).json({ message: "User not found" });
+    res.json(updatedUser);
+  } catch (err) {
+    res.status(400).json({ message: err.message });
   }
 };
 
-// POST: Thêm người dùng mới
-const createUser = async (req, res) => {
+// DELETE
+// controllers/userController.js
+exports.deleteUser = async (req, res) => {
   try {
-    const { name, email } = req.body;
-    const newUser = new User({ name, email });
-    await newUser.save();
-    res.status(201).json(newUser);
-  } catch (error) {
-    res.status(400).json({ message: 'Lỗi khi thêm người dùng', error });
+    const deletedUser = await User.findByIdAndDelete(req.params.id);
+    if (!deletedUser)
+      return res.status(404).json({ message: "User not found" });
+    res.json({ success: true, message: "User deleted" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 };
 
-module.exports = { getUsers, createUser };
