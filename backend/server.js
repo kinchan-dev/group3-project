@@ -2,9 +2,14 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors"); // 🟢 Thêm dòng này
-const userRoutes = require("./routes/user"); // hoặc './routes/userRoutes' nếu đúng tên file
+const userRoutes = require("./routes/user");
+const dotenv = require("dotenv");
+const connectDB = require("./config/db");
 
 const app = express();
+
+dotenv.config(); // load .env
+connectDB(); // connect MongoDB
 
 app.use(cors()); // 🟢 Cho phép React (port 3001) gọi API từ port 3000
 app.use(express.json());
