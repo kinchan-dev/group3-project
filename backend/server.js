@@ -3,6 +3,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const connectDB = require("./config/db");
+const profileRoutes = require("./routes/profileRoutes");
 
 // 🟢 Import đúng router mới
 const authRoutes = require("./routes/authRoutes");
@@ -15,7 +16,7 @@ app.use(express.json());
 
 // Routes chính
 app.use("/api/auth", authRoutes); // ✅ Dùng /api/auth thay vì /users
-
+app.use("/api/profile", profileRoutes);
 // Chạy server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server chạy tại cổng ${PORT}`));
