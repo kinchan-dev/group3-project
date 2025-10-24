@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
@@ -7,4 +7,5 @@ const userSchema = new mongoose.Schema({
   role: { type: String, default: "user" }
 });
 
-export default mongoose.model("User", userSchema);
+// ✅ Export model đúng chuẩn Mongoose
+module.exports = mongoose.model("User", userSchema);
