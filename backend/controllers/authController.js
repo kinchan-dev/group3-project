@@ -51,10 +51,16 @@ exports.login = async (req, res) => {
     );
 
     res.status(200).json({
-      message: "Đăng nhập thành công",
-      token,
-      role: user.role
-    });
+        message: "Đăng nhập thành công",
+        token,
+        user: {
+            id: user._id,
+            name: user.name,
+            email: user.email,
+            role: user.role, // ✅ thêm role vào user object
+    },
+});
+
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

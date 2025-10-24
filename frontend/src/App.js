@@ -1,27 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import axios from "axios";
 import AddUser from "./components/AddUser";
 import UserList from "./components/UserList";
 import SignupForm from "./components/SignupForm";
 import LoginForm from "./components/LoginForm";
 import ProfilePage from "./components/ProfilePage";
+import AdminUserList from "./components/AdminUserList";
 
 function App() {
   const [users, setUsers] = useState([]);
+  const [role, setRole] = useState(localStorage.getItem("role") || "");
 
   // 🧩 Lấy danh sách user
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     try {
       const res = await axios.get("http://localhost:3000/users");
       setUsers(res.data);
     } catch (err) {
       console.error("Lỗi khi lấy users:", err);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [fetchUsers]);
 
   const handleUserAdded = () => {
     fetchUsers();
@@ -33,7 +35,7 @@ function App() {
         Hệ thống Quản lý & Đăng nhập Người dùng
       </h1>
 
-      {/* 🟩 Khối Authentication */}
+      {/* 🟩 Đăng ký + Đăng nhập */}
       <div
         style={{
           display: "flex",
@@ -74,7 +76,7 @@ function App() {
 
       <hr style={{ margin: "40px 0" }} />
 
-      {/* 🟦 Khối Quản lý user */}
+      {/* 🟦 Quản lý user thông thường */}
       <div>
         <h2>Thêm User</h2>
         <AddUser onUserAdded={handleUserAdded} />
@@ -82,10 +84,20 @@ function App() {
         <h2>Danh sách User</h2>
         <UserList users={users} onUserUpdated={fetchUsers} />
       </div>
+
+      {/* 🧍‍♂️ Trang thông tin cá nhân */}
       <div>
         <h1>Trang Thông tin cá nhân</h1>
         <ProfilePage />
       </div>
+
+      {/* 🧑‍💼 Admin Dashboard */}
+      {role === "admin" && (
+        <div>
+          <h1>Admin Dashboard</h1>
+          <AdminUserList />
+        </div>
+      )}
     </div>
   );
 }
