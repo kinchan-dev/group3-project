@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
-const authMiddleware = require("../middleware/authMiddleware");
+
+const { verifyToken } = require("../middleware/authMiddleware");
 const { getProfile, updateProfile } = require("../controllers/profileController");
 
-// /api/profile
-router.get("/", authMiddleware, getProfile);
-router.put("/", authMiddleware, updateProfile);
+// ✅ middleware và controller đều là function
+router.get("/", verifyToken, getProfile);
+router.put("/", verifyToken, updateProfile);
 
 module.exports = router;
