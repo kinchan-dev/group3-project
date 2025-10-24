@@ -6,9 +6,13 @@ import SignupForm from "./components/SignupForm";
 import LoginForm from "./components/LoginForm";
 import ProfilePage from "./components/ProfilePage";
 import AdminUserList from "./components/AdminUserList";
+import ForgotPassword from "./components/ForgotPassword";
+import ResetPassword from "./components/ResetPassword";
+import UploadAvatar from "./components/UploadAvatar";
 
 function App() {
   const [users, setUsers] = useState([]);
+  // eslint-disable-next-line no-unused-vars
   const [role, setRole] = useState(localStorage.getItem("role") || "");
 
   // 🧩 Lấy danh sách user
@@ -98,7 +102,14 @@ function App() {
           <AdminUserList />
         </div>
       )}
+      <div>
+        <h1>🔐 Hệ thống Tài khoản Người dùng</h1>
+        <ForgotPassword />
+        <ResetPassword />
+        <UploadAvatar />
+      </div>
     </div>
+    
   );
 }
 
