@@ -4,6 +4,7 @@ import AddUser from "./components/AddUser";
 import UserList from "./components/UserList";
 import SignupForm from "./components/SignupForm";
 import LoginForm from "./components/LoginForm";
+import ProfilePage from "./components/ProfilePage";
 
 function App() {
   const [users, setUsers] = useState([]);
@@ -80,6 +81,10 @@ function App() {
 
         <h2>Danh sách User</h2>
         <UserList users={users} onUserUpdated={fetchUsers} />
+      </div>
+      <div>
+        <h1>Trang Thông tin cá nhân</h1>
+        <ProfilePage />
       </div>
     </div>
   );
