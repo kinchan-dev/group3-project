@@ -5,6 +5,8 @@ const cors = require("cors");
 const connectDB = require("./config/db");
 const profileRoutes = require("./routes/profileRoutes");
 const userRoutes = require("./routes/userRoutes");
+const uploadRoutes = require("./routes/uploadRoutes");
+
 
 // 🟢 Import đúng router mới
 const authRoutes = require("./routes/authRoutes");
@@ -20,6 +22,10 @@ app.use(express.json());
 app.use("/api/auth", authRoutes); // ✅ Dùng /api/auth thay vì /users
 app.use("/api/profile", profileRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api", require("./routes/passwordRoutes"));
+app.use("/api", uploadRoutes);
+
+
 // Chạy server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`🚀 Server chạy tại cổng ${PORT}`));
