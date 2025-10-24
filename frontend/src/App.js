@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import AddUser from "./AddUser";
-import UserList from "./UserList";
+import AddUser from "./components/AddUser";
+import UserList from "./components/UserList";
+import SignupForm from "./components/SignupForm";
+import LoginForm from "./components/LoginForm";
 
 function App() {
   const [users, setUsers] = useState([]);
 
-  // Hàm tải danh sách user
+  // 🧩 Lấy danh sách user
   const fetchUsers = async () => {
     try {
       const res = await axios.get("http://localhost:3000/users");
@@ -20,21 +22,65 @@ function App() {
     fetchUsers();
   }, []);
 
-  // Gọi lại khi thêm user
   const handleUserAdded = () => {
     fetchUsers();
   };
 
   return (
-    <div>
-      <h1>Quản lý User</h1>
+    <div style={{ padding: "20px", fontFamily: "Arial" }}>
+      <h1 style={{ textAlign: "center", marginBottom: "30px" }}>
+        Hệ thống Quản lý & Đăng nhập Người dùng
+      </h1>
 
-      <h2>Thêm User</h2>
-      <AddUser onUserAdded={handleUserAdded} />
+      {/* 🟩 Khối Authentication */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-around",
+          alignItems: "flex-start",
+          flexWrap: "wrap",
+          gap: "20px",
+        }}
+      >
+        <div
+          style={{
+            flex: "1",
+            minWidth: "300px",
+            maxWidth: "400px",
+            padding: "20px",
+            border: "1px solid #ccc",
+            borderRadius: "10px",
+            backgroundColor: "#f9f9f9",
+          }}
+        >
+          <SignupForm />
+        </div>
 
-      <h2>Danh sách User</h2>
-      {/* ✅ Truyền thêm onUserUpdated vào đây */}
-      <UserList users={users} onUserUpdated={fetchUsers} />
+        <div
+          style={{
+            flex: "1",
+            minWidth: "300px",
+            maxWidth: "400px",
+            padding: "20px",
+            border: "1px solid #ccc",
+            borderRadius: "10px",
+            backgroundColor: "#f9f9f9",
+          }}
+        >
+          <LoginForm />
+        </div>
+      </div>
+
+      <hr style={{ margin: "40px 0" }} />
+
+      {/* 🟦 Khối Quản lý user */}
+      <div>
+        <h2>Thêm User</h2>
+        <AddUser onUserAdded={handleUserAdded} />
+
+        <h2>Danh sách User</h2>
+        <UserList users={users} onUserUpdated={fetchUsers} />
+      </div>
     </div>
   );
 }
