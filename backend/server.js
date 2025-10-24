@@ -1,27 +1,20 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const cors = require("cors"); // 🟢 Thêm dòng này
-const userRoutes = require("./routes/user");
-const dotenv = require("dotenv");
+const cors = require("cors");
 const connectDB = require("./config/db");
+
+// 🟢 Import đúng router mới
+const authRoutes = require("./routes/authRoutes");
 
 const app = express();
 
-dotenv.config(); // load .env
-connectDB(); // connect MongoDB
-
-app.use(cors()); // 🟢 Cho phép React (port 3001) gọi API từ port 3000
+connectDB(); // Kết nối MongoDB
+app.use(cors({ origin: "http://localhost:3001" })); // Cho phép React gọi API
 app.use(express.json());
 
-// Kết nối MongoDB
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ Kết nối MongoDB Atlas thành công"))
-  .catch((err) => console.error("❌ Lỗi kết nối MongoDB:", err));
-
-// Routes
-app.use("/users", userRoutes);
+// Routes chính
+app.use("/api/auth", authRoutes); // ✅ Dùng /api/auth thay vì /users
 
 // Chạy server
 const PORT = process.env.PORT || 3000;
