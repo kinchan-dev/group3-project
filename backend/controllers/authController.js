@@ -27,23 +27,19 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // 1️⃣ Tìm user trong database
+    // 1️⃣ Tìm user
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(400).json({ message: "Email không tồn tại" });
-    }
+    if (!user) return res.status(400).json({ message: "Email không tồn tại" });
 
     // 2️⃣ So sánh mật khẩu
-    const isMatch = await bcrypt.compare(password, user.password);
-    console.log("👉 password nhập:", password);
-    console.log("👉 password DB:", user.password);
-    console.log("👉 Kết quả bcrypt.compare:", isMatch);
+    const isMatch = await bcrypt.compare(password, user.password); // ✅ khai báo biến ở đây
+    console.log("password nhập:", password);
+    console.log("password DB:", user.password);
+    console.log("Kết quả bcrypt.compare:", isMatch);
 
-    if (!isMatch) {
-      return res.status(400).json({ message: "Sai mật khẩu" });
-    }
+    if (!isMatch) return res.status(400).json({ message: "Sai mật khẩu" });
 
-    // 3️⃣ Tạo JWT token
+    // 3️⃣ Tạo token
     const token = jwt.sign(
       { id: user._id, role: user.role },
       process.env.JWT_SECRET,
@@ -51,20 +47,17 @@ exports.login = async (req, res) => {
     );
 
     res.status(200).json({
-        message: "Đăng nhập thành công",
-        token,
-        user: {
-            id: user._id,
-            name: user.name,
-            email: user.email,
-            role: user.role, // ✅ thêm role vào user object
-    },
-});
-
+      message: "Đăng nhập thành công",
+      token,
+      role: user.role,
+      userId: user._id // 👈 thêm userId để frontend dùng upload avatar
+    });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ message: err.message });
   }
 };
+
 
 
 exports.logout = (req, res) => {
