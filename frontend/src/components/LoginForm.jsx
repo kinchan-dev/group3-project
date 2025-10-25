@@ -13,7 +13,8 @@ export default function LoginForm() {
 
       // ✅ Lưu token và role vào localStorage
       localStorage.setItem("token", res.data.token);
-      localStorage.setItem("role", res.data.user.role);
+      localStorage.setItem("role", res.data.role);
+      localStorage.setItem("userId", res.data.userId);
 
       setMessage("✅ Đăng nhập thành công!");
       

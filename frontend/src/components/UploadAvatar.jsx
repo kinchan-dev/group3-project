@@ -8,11 +8,14 @@ export default function UploadAvatar() {
 
   const handleUpload = async (e) => {
     e.preventDefault();
+    const userId = localStorage.getItem("userId"); // ✅ lấy userId từ localStorage
+
     if (!file) return setMessage("❌ Hãy chọn ảnh!");
+    if (!userId) return setMessage("❌ Không tìm thấy userId, hãy đăng nhập lại!");
 
     const formData = new FormData();
     formData.append("avatar", file);
-    formData.append("userId", localStorage.getItem("userId")); // bạn có thể thay bằng id thực tế
+    formData.append("userId", userId);
 
     try {
       const res = await axios.post("http://localhost:3000/api/upload-avatar", formData, {
@@ -21,6 +24,7 @@ export default function UploadAvatar() {
       setMessage("✅ Upload thành công!");
       setImageUrl(res.data.avatarUrl);
     } catch (err) {
+      console.error(err);
       setMessage(err.response?.data?.message || "❌ Upload thất bại!");
     }
   };
@@ -29,13 +33,27 @@ export default function UploadAvatar() {
     <div style={{ border: "1px solid #ccc", padding: "20px", borderRadius: "8px" }}>
       <h2>Tải ảnh đại diện</h2>
       <form onSubmit={handleUpload}>
-        <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files[0])} />
-        <button type="submit">Upload</button>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={(e) => setFile(e.target.files[0])}
+        />
+        <button type="submit" style={{ marginLeft: "10px" }}>
+          Upload
+        </button>
       </form>
+
       <p>{message}</p>
+
       {imageUrl && (
         <div style={{ marginTop: "10px" }}>
-          <img src={imageUrl} alt="Avatar" width="120" style={{ borderRadius: "50%" }} />
+          <img
+            src={imageUrl}
+            alt="Avatar"
+            width="120"
+            height="120"
+            style={{ borderRadius: "50%", objectFit: "cover" }}
+          />
         </div>
       )}
     </div>
