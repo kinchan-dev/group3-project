@@ -17,76 +17,38 @@ export default function SignupForm() {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="p-4 shadow-sm rounded"
-      style={{
-        backgroundColor: "#f9f9f9",
-        border: "1px solid #dcdcdc",
-        color: "dimgray",
-      }}
-    >
-      <h4 className="text-center mb-4" style={{ color: "dimgray" }}>
-        📝 Đăng ký tài khoản
-      </h4>
+    <form onSubmit={handleSubmit} className="auth-form">
+      <label>Tên</label>
+      <input
+        type="text"
+        placeholder="Tên"
+        value={form.name}
+        onChange={(e) => setForm({ ...form, name: e.target.value })}
+        required
+      />
 
-      <div className="mb-3">
-        <label className="form-label">Tên</label>
-        <input
-          type="text"
-          className="form-control"
-          placeholder="Nhập tên..."
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-          required
-        />
-      </div>
+      <label>Email</label>
+      <input
+        type="email"
+        placeholder="Email"
+        value={form.email}
+        onChange={(e) => setForm({ ...form, email: e.target.value })}
+        required
+      />
 
-      <div className="mb-3">
-        <label className="form-label">Email</label>
-        <input
-          type="email"
-          className="form-control"
-          placeholder="Nhập email..."
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-          required
-        />
-      </div>
+      <label>Mật khẩu</label>
+      <input
+        type="password"
+        placeholder="Mật khẩu"
+        value={form.password}
+        onChange={(e) => setForm({ ...form, password: e.target.value })}
+        required
+      />
 
-      <div className="mb-3">
-        <label className="form-label">Mật khẩu</label>
-        <input
-          type="password"
-          className="form-control"
-          placeholder="Nhập mật khẩu..."
-          value={form.password}
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-          required
-        />
-      </div>
-
-      <button
-        type="submit"
-        className="btn w-100 mt-2"
-        style={{
-          backgroundColor: "dimgray",
-          color: "white",
-          fontWeight: "bold",
-          borderRadius: "8px",
-        }}
-      >
-        Đăng ký
-      </button>
+      <button type="submit">Đăng ký</button>
 
       {message && (
-        <p
-          className="mt-3 text-center"
-          style={{
-            color: message.includes("✅") ? "green" : "red",
-            whiteSpace: "pre-line",
-          }}
-        >
+        <p className="auth-message">
           {message}
         </p>
       )}
