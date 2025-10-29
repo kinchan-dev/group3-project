@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
-import SignupForm from "./components/SignupForm";
 import LoginForm from "./components/LoginForm";
+import SignupForm from "./components/SignupForm";
 import ForgotPassword from "./components/ForgotPassword";
 import ProfilePage from "./components/ProfilePage";
 import AdminUserList from "./components/AdminUserList";
 import UploadAvatar from "./components/UploadAvatar";
+import "./App.css";
 
 function App() {
   const [activeForm, setActiveForm] = useState("login");
+  const [activeTab, setActiveTab] = useState("profile");
+  // eslint-disable-next-line no-unused-vars
   const [role, setRole] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // ✅ Kiểm tra token mỗi khi mở trang
   useEffect(() => {
     const token = localStorage.getItem("token");
     const savedRole = localStorage.getItem("role");
@@ -25,97 +27,103 @@ function App() {
     }
   }, []);
 
-  // ✅ Xử lý khi đăng nhập thành công
   const handleLoginSuccess = (userRole) => {
     setIsLoggedIn(true);
     setRole(userRole);
   };
 
-  // ✅ Đăng xuất
   const handleLogout = () => {
     localStorage.clear();
     setIsLoggedIn(false);
     setActiveForm("login");
   };
 
-  // ✅ Giao diện đăng nhập
   if (!isLoggedIn) {
     return (
-      <div className="container py-5" style={{ fontFamily: "Arial" }}>
-        <h2 className="text-center mb-4 text-primary">
-          🌐 Hệ thống Quản lý & Đăng nhập Người dùng
-        </h2>
+      <div className="auth-container">
+        <h2 className="auth-title">👋 Chào mừng!</h2>
+        <p className="auth-subtitle">Vui lòng đăng nhập hoặc đăng ký</p>
 
-        <div className="card shadow-sm p-4 mx-auto" style={{ maxWidth: "420px" }}>
+        <div className="form-wrapper">
           {activeForm === "login" && (
-            <>
+            <div className="form-card">
               <LoginForm onLoginSuccess={handleLoginSuccess} />
-
-              <div className="text-center mt-3">
-                <button className="btn btn-link" onClick={() => setActiveForm("signup")}>
-                  📝 Đăng ký
-                </button>
-                <button className="btn btn-link" onClick={() => setActiveForm("forgot")}>
-                  ❓ Quên mật khẩu
+              <div className="form-links">
+                <button onClick={() => setActiveForm("signup")}>Đăng ký</button>
+                <button onClick={() => setActiveForm("forgot")}>
+                  Quên mật khẩu
                 </button>
               </div>
-            </>
+            </div>
           )}
 
           {activeForm === "signup" && (
-            <> 
+            <div className="form-card">
               <SignupForm />
-              <div className="text-center mt-3">
-                <button className="btn btn-link" onClick={() => setActiveForm("login")}>
-                  🔙 Quay lại Đăng nhập
+              <div className="form-links">
+                <button onClick={() => setActiveForm("login")}>
+                  🔙 Quay lại đăng nhập
                 </button>
               </div>
-            </>
+            </div>
           )}
 
           {activeForm === "forgot" && (
-            <>
+            <div className="form-card">
               <ForgotPassword />
-              <div className="text-center mt-3">
-                <button className="btn btn-link" onClick={() => setActiveForm("login")}>
-                  🔙 Quay lại Đăng nhập
+              <div className="form-links">
+                <button onClick={() => setActiveForm("login")}>
+                  🔙 Quay lại đăng nhập
                 </button>
               </div>
-            </>
+            </div>
           )}
         </div>
       </div>
     );
   }
 
-  // ✅ Giao diện sau khi đăng nhập
+  // ✅ Trang sau khi đăng nhập
   return (
-    <div className="container py-4" style={{ fontFamily: "Arial" }}>
-      <h2 className="text-center mb-4 text-primary">👋 Chào mừng bạn đến hệ thống!</h2>
+    <div className="dashboard-container">
+      <h2 className="dashboard-title">⚙️ Quản Lý User</h2>
 
-      <div className="card mb-4 shadow-sm border-0 p-4">
-        <h3 className="text-secondary mb-3">👤 Thông tin cá nhân</h3>
-        <ProfilePage />
-        <button className="btn btn-outline-danger mt-3" onClick={handleLogout}>
-          🚪 Đăng xuất
+      {/* Navbar */}
+      <div className="dashboard-nav">
+        <span
+          className={activeTab === "users" ? "active-tab" : ""}
+          onClick={() => setActiveTab("users")}
+        >
+          Quản lý User
+        </span>
+        <span
+          className={activeTab === "profile" ? "active-tab" : ""}
+          onClick={() => setActiveTab("profile")}
+        >
+          Profile
+        </span>
+        <button className="logout-btn" onClick={handleLogout}>
+          Đăng xuất
         </button>
       </div>
 
-      {role === "admin" && (
-        <div className="card mb-4 shadow-sm border-0 p-4">
-          <h3 className="text-secondary mb-3">🛠️ Admin Dashboard</h3>
+      {/* Nội dung thay đổi theo tab */}
+      {activeTab === "profile" && (
+        <div className="dashboard-card">
+          <ProfilePage />
+        </div>
+      )}
+
+
+      {activeTab === "users" && (
+        <div className="dashboard-card">
           <AdminUserList />
         </div>
       )}
 
-      <div className="card mb-4 shadow-sm border-0 p-4">
-        <h3 className="text-secondary mb-3">📤 Tải ảnh đại diện</h3>
+      <div className="dashboard-card">
         <UploadAvatar />
       </div>
-
-      <footer className="text-center mt-4 text-muted small">
-        © 2025 Group 3 - User Management System | ASP.NET + React + MongoDB
-      </footer>
     </div>
   );
 }

@@ -1,38 +1,412 @@
-.App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+/* Nền tổng thể */
+body {
+  background-color: #0b1220;
+  color: #e0e6ed;
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
   min-height: 100vh;
+}
+
+/* Container chính */
+.auth-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-top: 60px;
+}
+
+.auth-title {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 28px;
+  margin-bottom: 8px;
+}
+
+.auth-subtitle {
+  color: #9ca3af;
+  font-size: 15px;
+  margin-bottom: 40px;
+}
+
+/* Khối chứa form */
+.form-wrapper {
+  display: flex;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  align-items: flex-start;
+  gap: 40px;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 900px;
+}
+
+/* Card từng form */
+.form-card {
+  background-color: #1b2233;
+  border-radius: 14px;
+  padding: 32px;
+  width: 360px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  transition: transform 0.2s ease-in-out;
+}
+
+.form-card:hover {
+  transform: translateY(-3px);
+}
+
+.form-card h4 {
+  text-align: left;
+  color: #ffffff;
+  font-weight: 600;
+  margin-bottom: 25px;
+}
+
+/* Input */
+.form-card input {
+  width: 100%;
+  padding: 12px 14px;
+  background-color: #101827;
+  border: 1px solid #2a324a;
+  border-radius: 8px;
   color: white;
+  margin-bottom: 18px;
+  outline: none;
+  font-size: 14px;
+  transition: border-color 0.2s;
 }
 
-.App-link {
-  color: #61dafb;
+.form-card input:focus {
+  border-color: #22c55e;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+/* Nút chính */
+.form-card button[type="submit"] {
+  width: 100%;
+  background-color: #22c55e;
+  color: #ffffff;
+  border: none;
+  padding: 12px 0;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background-color 0.2s;
+  font-size: 15px;
+}
+
+.form-card button[type="submit"]:hover {
+  background-color: #16a34a;
+}
+
+/* Nút nhỏ link dưới */
+.form-links {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.form-links button {
+  background: none;
+  border: none;
+  color: #9ca3af;
+  text-decoration: underline;
+  font-size: 14px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.form-links button:hover {
+  color: #22c55e;
+}
+
+/* Dashboard sau đăng nhập */
+.dashboard-container {
+  padding: 40px;
+  color: #ffffff;
+}
+
+.dashboard-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.dashboard-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.dashboard-nav span {
+  color: #22c55e;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.dashboard-nav span:hover {
+  color: #16a34a;
+}
+
+.logout-btn {
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 14px;
+  transition: background-color 0.2s;
+}
+
+.logout-btn:hover {
+  background-color: #dc2626;
+}
+
+.dashboard-card {
+  background-color: #1b2233;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+/* Hộp token */
+.token-box {
+  background-color: #101827;
+  border: 1px solid #2a324a;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-top: 15px;
+  color: #d1fae5;
+  font-size: 14px;
+}
+
+/* Thông báo token */
+.token-message {
+  color: #22c55e;
+  font-weight: 500;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Token gọn, căn giữa */
+.token-display {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #1b2233;
+  border: 1px solid #2a324a;
+  border-radius: 6px;
+  padding: 4px 8px;
+  overflow-x: auto;
+}
+
+/* Token text */
+.token-display code {
+  color: #a5b4fc;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+  max-width: 290px; /* giữ token ngắn gọn */
+}
+
+/* Nút sao chép nhỏ và cân đối */
+.token-display button {
+  background-color: transparent;
+  border: 1px solid #22c55e;
+  color: #22c55e;
+  border-radius: 4px;
+  padding: 3px 6px;
+  font-size: 12px;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-left: 6px;
+  transition: all 0.2s ease-in-out;
+}
+
+.token-display button:hover {
+  background-color: #22c55e;
+  color: white;
+  border-color: #16a34a;
+}
+
+/* Mở rộng form một chút */
+.wide-form {
+  width: 440px;
+  max-width: 95%;
+}
+
+.wide-form button[type="submit"]:hover {
+  background-color: #16a34a;
+}
+
+/* ===== PROFILE LAYOUT (2 CỘT) ===== */
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px;
+}
+
+/* Tab đang chọn */
+.active-tab {
+  color: #22c55e;
+  border-bottom: 2px solid #22c55e;
+  padding-bottom: 3px;
+  font-weight: 600;
+}
+
+/* Responsive: tự xuống hàng khi hẹp */
+@media (max-width: 992px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
   }
-  to {
-    transform: rotate(360deg);
+}
+/* ===== ADMIN USER LIST STYLE ===== */
+
+.admin-card {
+  background-color: #1b2233;
+  border-radius: 12px;
+  padding: 24px 28px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.admin-title {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.admin-message {
+  color: #22c55e;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+/* Danh sách user */
+.user-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Card từng user */
+.user-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #101827;
+  border: 1px solid #2a324a;
+  border-radius: 8px;
+  padding: 10px 14px;
+  transition: transform 0.2s ease, border-color 0.2s;
+}
+
+.user-card:hover {
+  transform: translateY(-2px);
+  border-color: #22c55e;
+}
+
+/* Avatar (chữ cái đầu) */
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #22c55e;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 10px;
+}
+
+/* Thông tin user */
+.user-info {
+  flex-grow: 1;
+  color: #e5e7eb;
+}
+
+.user-info p {
+  margin: 0;
+  color: #9ca3af;
+  font-size: 13px;
+}
+
+/* Nút hành động */
+.user-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-edit,
+.btn-delete {
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+/* Nút Sửa */
+.btn-edit {
+  background-color: #2563eb;
+  color: #fff;
+}
+
+.btn-edit:hover {
+  background-color: #1d4ed8;
+}
+
+/* Nút Xóa */
+.btn-delete {
+  background-color: #ef4444;
+  color: #fff;
+}
+
+.btn-delete:hover {
+  background-color: #dc2626;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .user-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .user-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+/* Placeholder: trắng nhưng dịu */
+input::placeholder {
+  color: #d1d5db !important; /* xám trắng mềm hơn */
+  opacity: 0.1;              /* mờ nhẹ, vẫn đọc tốt */
+}
+
+
+/* Focus: viền sáng nhẹ chứ không phát sáng quá gắt */
+input:focus {
+  outline: none;
+  border: 1px solid #3b82f6;       /* xanh dương dịu hơn, chuyên nghiệp */
+  box-shadow: 0 0 4px rgba(59,130,246,0.4);
+  transition: 0.2s;
+}
+
+
+/* Responsive */
+@media (max-width: 768px) {
+  .form-wrapper {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
   }
 }
