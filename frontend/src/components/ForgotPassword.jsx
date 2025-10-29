@@ -1,35 +1,72 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-export default function ForgotPasswordForm() {
+export default function ForgotPassword() {
   const [email, setEmail] = useState("");
-  const [token, setToken] = useState("");
-  const [newPassword, setNewPassword] = useState("");
   const [message, setMessage] = useState("");
-  const API_URL = "http://localhost:3000/api";
 
-  const handleForgot = async () => {
-    const res = await axios.post(`${API_URL}/forgot-password`, { email });
-    setMessage(res.data.message + "\nToken: " + res.data.resetToken);
-  };
-
-  const handleReset = async () => {
-    const res = await axios.post(`${API_URL}/reset-password`, { email, resetToken: token, newPassword });
-    setMessage(res.data.message);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post("http://localhost:3000/api/forgot-password", {
+        email,
+      });
+      setMessage(`✅ ${res.data.message}\n🔑 Token: ${res.data.resetToken}`);
+    } catch (err) {
+      setMessage(err.response?.data?.message || "❌ Lỗi khi gửi yêu cầu!");
+    }
   };
 
   return (
-    <div>
-      <h3>Quên mật khẩu</h3>
-      <input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-      <button onClick={handleForgot}>Gửi token reset</button>
+    <form
+      onSubmit={handleSubmit}
+      className="p-4 shadow-sm rounded"
+      style={{
+        backgroundColor: "#f9f9f9",
+        border: "1px solid #dcdcdc",
+        color: "dimgray",
+      }}
+    >
+      <h4 className="text-center mb-4" style={{ color: "dimgray" }}>
+        🔑 Quên mật khẩu
+      </h4>
 
-      <h3>Đặt lại mật khẩu</h3>
-      <input placeholder="Token reset" value={token} onChange={(e) => setToken(e.target.value)} />
-      <input type="password" placeholder="Mật khẩu mới" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} />
-      <button onClick={handleReset}>Đổi mật khẩu</button>
+      <div className="mb-3">
+        <label className="form-label">Email</label>
+        <input
+          type="email"
+          className="form-control"
+          placeholder="Nhập email của bạn..."
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+        />
+      </div>
 
-      <p>{message}</p>
-    </div>
+      <button
+        type="submit"
+        className="btn w-100 mt-2"
+        style={{
+          backgroundColor: "dimgray",
+          color: "white",
+          fontWeight: "bold",
+          borderRadius: "8px",
+        }}
+      >
+        Gửi yêu cầu
+      </button>
+
+      {message && (
+        <p
+          className="mt-3 text-center"
+          style={{
+            color: message.includes("✅") ? "green" : "red",
+            whiteSpace: "pre-line",
+          }}
+        >
+          {message}
+        </p>
+      )}
+    </form>
   );
 }
