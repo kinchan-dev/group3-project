@@ -11,7 +11,9 @@ export default function LoginForm({ onLoginSuccess }) {
     try {
       const res = await axios.post(`${API_URL}/auth/login`, form);
 
-      localStorage.setItem("token", res.data.token);
+      // ✅ Lưu cả accessToken và refreshToken
+      localStorage.setItem("accessToken", res.data.accessToken);
+      localStorage.setItem("refreshToken", res.data.refreshToken);
       localStorage.setItem("role", res.data.role);
       localStorage.setItem("userId", res.data.userId);
 
@@ -47,9 +49,7 @@ export default function LoginForm({ onLoginSuccess }) {
       <button type="submit">Đăng nhập</button>
 
       {message && (
-        <p className="auth-message">
-          {message}
-        </p>
+        <p className="auth-message">{message}</p>
       )}
     </form>
   );

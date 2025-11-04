@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import API from "../api/axios"; // ✅ Dùng API có interceptor
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -9,11 +9,8 @@ export default function ForgotPassword() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:3000/api/forgot-password", {
-        email,
-      });
-
-      setMessage(`✅ Token reset mật khẩu (dùng cho bước /reset-password)`);
+      const res = await API.post("/forgot-password", { email }); // ✅ Không cần URL đầy đủ
+      setMessage("✅ Token reset mật khẩu (dùng cho bước /reset-password)");
       setToken(res.data.resetToken);
     } catch (err) {
       setMessage(err.response?.data?.message || "❌ Lỗi khi gửi yêu cầu!");

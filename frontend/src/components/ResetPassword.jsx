@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import API from "../api/axios"; // ✅ Dùng API thay axios
 
 export default function ResetPassword() {
   const [email, setEmail] = useState("");
@@ -10,11 +10,7 @@ export default function ResetPassword() {
   const handleReset = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:3000/api/reset-password", {
-        email,
-        resetToken,
-        newPassword,
-      });
+      const res = await API.post("/reset-password", { email, resetToken, newPassword });
       setMessage(`✅ ${res.data.message}`);
     } catch (err) {
       setMessage(err.response?.data?.message || "❌ Lỗi khi reset mật khẩu!");
@@ -22,7 +18,14 @@ export default function ResetPassword() {
   };
 
   return (
-    <div style={{ border: "1px solid #ccc", padding: "20px", borderRadius: "8px", marginBottom: "20px" }}>
+    <div
+      style={{
+        border: "1px solid #ccc",
+        padding: "20px",
+        borderRadius: "8px",
+        marginBottom: "20px",
+      }}
+    >
       <h2>Đặt lại mật khẩu</h2>
       <form onSubmit={handleReset}>
         <input

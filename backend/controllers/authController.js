@@ -1,19 +1,18 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User"); // sẽ tạo ở bước dưới
+const User = require("../models/User");
+const RefreshToken = require("../models/RefreshToken");
 
+// ------------------ SIGNUP ------------------
 exports.signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    // Kiểm tra email tồn tại
     const existingUser = await User.findOne({ email });
-    if (existingUser) return res.status(400).json({ message: "Email đã tồn tại" });
+    if (existingUser)
+      return res.status(400).json({ message: "Email đã tồn tại" });
 
-    // Mã hoá mật khẩu
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Tạo user mới
     const newUser = new User({ name, email, password: hashedPassword });
     await newUser.save();
 
@@ -23,34 +22,45 @@ exports.signup = async (req, res) => {
   }
 };
 
+// ------------------ LOGIN ------------------
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-
-    // 1️⃣ Tìm user
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: "Email không tồn tại" });
+    if (!user)
+      return res.status(400).json({ message: "Email không tồn tại" });
 
-    // 2️⃣ So sánh mật khẩu
-    const isMatch = await bcrypt.compare(password, user.password); // ✅ khai báo biến ở đây
-    console.log("password nhập:", password);
-    console.log("password DB:", user.password);
-    console.log("Kết quả bcrypt.compare:", isMatch);
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch)
+      return res.status(400).json({ message: "Sai mật khẩu" });
 
-    if (!isMatch) return res.status(400).json({ message: "Sai mật khẩu" });
-
-    // 3️⃣ Tạo token
-    const token = jwt.sign(
-      { id: user._id, role: user.role },
+    // 🟢 Access token (15 phút)
+    const accessToken = jwt.sign(
+      { id: user._id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      { expiresIn: "15m" }
     );
 
+    // 🟢 Refresh token (7 ngày)
+    const refreshToken = jwt.sign(
+      { id: user._id, email: user.email, role: user.role },
+      process.env.REFRESH_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    // Lưu refresh token vào DB
+    await RefreshToken.create({
+      token: refreshToken,
+      userId: user._id,
+      expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    });
+
     res.status(200).json({
-      message: "Đăng nhập thành công",
-      token,
+      message: "Đăng nhập thành công!",
+      accessToken,
+      refreshToken,
       role: user.role,
-      userId: user._id // 👈 thêm userId để frontend dùng upload avatar
+      userId: user._id
     });
   } catch (err) {
     console.error(err);
@@ -58,8 +68,15 @@ exports.login = async (req, res) => {
   }
 };
 
+// ------------------ LOGOUT ------------------
+exports.logout = async (req, res) => {
+  try {
+    const { token } = req.body;
+    if (!token) return res.status(400).json({ message: "Token required" });
 
-
-exports.logout = (req, res) => {
-  res.status(200).json({ message: "Đăng xuất thành công (xóa token phía client)" });
+    await RefreshToken.deleteOne({ token });
+    res.status(200).json({ message: "Đăng xuất thành công, refresh token đã bị thu hồi!" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 };

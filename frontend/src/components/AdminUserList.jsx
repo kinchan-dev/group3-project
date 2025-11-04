@@ -1,55 +1,48 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../api/axios"; // ✅ Dùng API interceptor thay vì axios
 
 export default function AdminUserList() {
   const [users, setUsers] = useState([]);
   const [message, setMessage] = useState("");
   const [editingUser, setEditingUser] = useState(null);
   const [editForm, setEditForm] = useState({ name: "", email: "" });
-  const token = localStorage.getItem("token");
 
+  // 🔄 Lấy danh sách user
   const fetchUsers = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/users", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await API.get("/users"); // ✅ Không cần thêm token thủ công
       setUsers(res.data);
-    } catch {
+    } catch (err) {
       setMessage("❌ Không thể tải danh sách user (chỉ admin mới xem được)");
     }
   };
 
+  // 🗑️ Xóa user
   const deleteUser = async (id) => {
     if (!window.confirm("Bạn có chắc muốn xóa user này?")) return;
     try {
-      const res = await axios.delete(`http://localhost:3000/api/users/${id}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await API.delete(`/users/${id}`);
       setMessage("🗑️ Xóa user thành công!");
       fetchUsers();
-    } catch {
+    } catch (err) {
       setMessage("❌ Lỗi khi xóa user!");
     }
   };
 
+  // ✏️ Bắt đầu sửa
   const startEdit = (user) => {
     setEditingUser(user._id);
     setEditForm({ name: user.name, email: user.email });
   };
 
+  // 💾 Lưu thay đổi
   const saveEdit = async (id) => {
     try {
-      await axios.put(
-        `http://localhost:3000/api/users/${id}`,
-        editForm,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      await API.put(`/users/${id}`, editForm);
       setMessage("✅ Cập nhật user thành công!");
       setEditingUser(null);
       fetchUsers();
-    } catch {
+    } catch (err) {
       setMessage("❌ Lỗi khi cập nhật user!");
     }
   };

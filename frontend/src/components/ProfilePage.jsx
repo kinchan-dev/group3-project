@@ -1,19 +1,16 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+import API from "../api/axios";
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState({});
   const [form, setForm] = useState({});
   const [message, setMessage] = useState("");
   const API_URL = "http://localhost:3000/api/profile";
-  const token = localStorage.getItem("token");
-
+  const token = localStorage.getItem("token"); // ✅ thêm dòng này
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get(API_URL, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await API.get(API_URL.replace("http://localhost:3000/api", ""));
         setProfile(res.data);
         setForm(res.data);
       } catch (err) {
@@ -26,9 +23,7 @@ export default function ProfilePage() {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.put(API_URL, form, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const res = await API.put("/profile", form);
       setMessage("✅ Cập nhật thành công!");
       setProfile(res.data.user);
     } catch (err) {
