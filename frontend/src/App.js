@@ -10,7 +10,6 @@ import "./App.css";
 function App() {
   const [activeForm, setActiveForm] = useState("login");
   const [activeTab, setActiveTab] = useState("profile");
-  // eslint-disable-next-line no-unused-vars
   const [role, setRole] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -38,6 +37,7 @@ function App() {
     setActiveForm("login");
   };
 
+  // 🟢 Nếu chưa đăng nhập
   if (!isLoggedIn) {
     return (
       <div className="auth-container">
@@ -83,46 +83,63 @@ function App() {
     );
   }
 
-  // ✅ Trang sau khi đăng nhập
+  // ✅ Sau khi đăng nhập
   return (
     <div className="dashboard-container">
-      <h2 className="dashboard-title">⚙️ Quản Lý User</h2>
+      <h2 className="dashboard-title">
+        {role === "admin"
+          ? "👑 Admin Dashboard"
+          : role === "moderator"
+          ? "🛡️ Moderator Panel"
+          : "👤 User Profile"}
+      </h2>
 
-      {/* Navbar */}
+      {/* 🧭 Navbar phân quyền */}
       <div className="dashboard-nav">
-        <span
-          className={activeTab === "users" ? "active-tab" : ""}
-          onClick={() => setActiveTab("users")}
-        >
-          Quản lý User
-        </span>
+        {/* ✅ Admin và Moderator mới thấy "Quản lý User" */}
+        {(role === "admin" || role === "moderator") && (
+          <span
+            className={activeTab === "users" ? "active-tab" : ""}
+            onClick={() => setActiveTab("users")}
+          >
+            Quản lý User
+          </span>
+        )}
+
+        {/* ✅ Tất cả đều có thể xem Profile */}
         <span
           className={activeTab === "profile" ? "active-tab" : ""}
           onClick={() => setActiveTab("profile")}
         >
           Profile
         </span>
+
+        {/* ✅ Moderator và Admin có thể upload avatar */}
+        {(role === "admin" || role === "moderator" || role === "user") && (
+          <span
+            className={activeTab === "upload" ? "active-tab" : ""}
+            onClick={() => setActiveTab("upload")}
+          >
+            Upload Avatar
+          </span>
+        )}
+
         <button className="logout-btn" onClick={handleLogout}>
           Đăng xuất
         </button>
       </div>
 
-      {/* Nội dung thay đổi theo tab */}
-      {activeTab === "profile" && (
-        <div className="dashboard-card">
-          <ProfilePage />
-        </div>
-      )}
-
-
-      {activeTab === "users" && (
-        <div className="dashboard-card">
-          <AdminUserList />
-        </div>
-      )}
-
+      {/* ⚙️ Nội dung thay đổi theo tab */}
       <div className="dashboard-card">
-        <UploadAvatar />
+        {/* ✅ Profile */}
+        {activeTab === "profile" && <ProfilePage />}
+
+        {/* ✅ Admin và Moderator: danh sách user */}
+        {activeTab === "users" &&
+          (role === "admin" || role === "moderator") && <AdminUserList />}
+
+        {/* ✅ Upload Avatar: cho tất cả */}
+        {activeTab === "upload" && <UploadAvatar />}
       </div>
     </div>
   );
