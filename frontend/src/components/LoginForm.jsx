@@ -16,6 +16,7 @@ export default function LoginForm({ onLoginSuccess }) {
       localStorage.setItem("refreshToken", res.data.refreshToken);
       localStorage.setItem("role", res.data.role);
       localStorage.setItem("userId", res.data.userId);
+      localStorage.setItem("role", res.data.role);
 
       setMessage("✅ Đăng nhập thành công!");
       setTimeout(() => {
