@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import API from "../api/axios"; // ✅ Dùng interceptor
+import API from "../api/axios"; // ✅ Dùng interceptor đã có token
 
 export default function AdminUserList() {
   const [users, setUsers] = useState([]);
@@ -11,7 +11,6 @@ export default function AdminUserList() {
   // 🔄 Lấy danh sách user
   const fetchUsers = async () => {
     try {
-      // ✅ Chỉ admin và moderator mới được xem danh sách
       if (role !== "admin" && role !== "moderator") {
         setMessage("⚠️ Bạn không có quyền xem danh sách user!");
         return;
@@ -19,7 +18,8 @@ export default function AdminUserList() {
 
       const res = await API.get("/users");
       setUsers(res.data);
-    } catch {
+    } catch (err) {
+      console.error(err);
       setMessage("❌ Không thể tải danh sách user!");
     }
   };
@@ -80,7 +80,10 @@ export default function AdminUserList() {
       {message && (
         <p
           style={{
-            color: message.includes("✅") || message.includes("🗑️") ? "#22c55e" : "#ef4444",
+            color:
+              message.includes("✅") || message.includes("🗑️")
+                ? "#22c55e"
+                : "#ef4444",
             marginBottom: "15px",
             fontWeight: "500",
           }}
@@ -104,35 +107,54 @@ export default function AdminUserList() {
             padding: "12px 20px",
             borderRadius: "8px",
             marginBottom: "10px",
-            border: editingUser === u._id ? "1px solid #22c55e" : "1px solid transparent",
+            border:
+              editingUser === u._id
+                ? "1px solid #22c55e"
+                : "1px solid transparent",
           }}
         >
           {/* Avatar + Info */}
           <div style={{ display: "flex", alignItems: "center", gap: "15px" }}>
-            <div
-              style={{
-                backgroundColor: "#22c55e",
-                color: "white",
-                fontWeight: "bold",
-                width: "40px",
-                height: "40px",
-                borderRadius: "50%",
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                textTransform: "uppercase",
-              }}
-            >
-              {u.name ? u.name.charAt(0) : "?"}
-            </div>
+            {/* 🖼️ Avatar (có thể là ảnh thật từ Cloudinary) */}
+            {u.avatar ? (
+              <img
+                src={u.avatar}
+                alt={u.name}
+                width="45"
+                height="45"
+                style={{
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                  border: "2px solid #22c55e",
+                }}
+              />
+            ) : (
+              <div
+                style={{
+                  backgroundColor: "#3b82f6",
+                  width: "45px",
+                  height: "45px",
+                  borderRadius: "50%",
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  fontWeight: "bold",
+                  color: "white",
+                }}
+              >
+                {u.name ? u.name.charAt(0).toUpperCase() : "?"}
+              </div>
+            )}
 
-            {/* Editable */}
+            {/* Thông tin hoặc form sửa */}
             {editingUser === u._id ? (
               <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
                 <input
                   type="text"
                   value={editForm.name}
-                  onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, name: e.target.value })
+                  }
                   style={{
                     backgroundColor: "#111827",
                     color: "#fff",
@@ -144,7 +166,9 @@ export default function AdminUserList() {
                 <input
                   type="email"
                   value={editForm.email}
-                  onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                  onChange={(e) =>
+                    setEditForm({ ...editForm, email: e.target.value })
+                  }
                   style={{
                     backgroundColor: "#111827",
                     color: "#fff",
@@ -167,7 +191,7 @@ export default function AdminUserList() {
             )}
           </div>
 
-          {/* Actions */}
+          {/* Các hành động */}
           <div style={{ display: "flex", gap: "8px" }}>
             {editingUser === u._id ? (
               <>
@@ -202,7 +226,6 @@ export default function AdminUserList() {
               </>
             ) : (
               <>
-                {/* Sửa chỉ dành cho Admin và Moderator */}
                 {(role === "admin" || role === "moderator") && (
                   <button
                     onClick={() => startEdit(u)}
@@ -219,8 +242,6 @@ export default function AdminUserList() {
                     Sửa
                   </button>
                 )}
-
-                {/* Xóa chỉ dành cho Admin */}
                 {role === "admin" && (
                   <button
                     onClick={() => deleteUser(u._id)}

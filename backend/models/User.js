@@ -12,8 +12,7 @@ const userSchema = new mongoose.Schema({
   resetToken: { type: String },
   tokenExpire: { type: Number },
   
-  // 🟡 tùy chọn cho hoạt động 4
-  avatar: { type: String }
+  avatar: { type: String, default: "" },
 });
 
 module.exports = mongoose.model("User", userSchema);

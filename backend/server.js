@@ -19,7 +19,7 @@ app.use(express.json());
 
 
 // Routes chính
-app.use("/api/auth", authRoutes); // ✅ Dùng /api/auth thay vì /users
+app.use("/api/auth", authRoutes);
 app.use("/api/profile", profileRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api", require("./routes/passwordRoutes"));

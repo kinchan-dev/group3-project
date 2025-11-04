@@ -1,17 +1,18 @@
 import React, { useState } from "react";
-import API from "../api/axios"; // ✅ Dùng API interceptor thay vì axios
+import API from "../api/axios"; // ✅ Sử dụng API interceptor có gắn token sẵn
 
-function UserList({ users, onUserUpdated }) {
+export default function UserList({ users, onUserUpdated }) {
   const [editingUser, setEditingUser] = useState(null);
   const [editName, setEditName] = useState("");
   const [editEmail, setEditEmail] = useState("");
 
   // 🗑️ Xóa user
   const handleDelete = async (id) => {
+    if (!window.confirm("Bạn có chắc muốn xóa user này?")) return;
     try {
-      const res = await API.delete(`/users/${id}`); // ✅ Gọi API với đường dẫn tương đối
+      await API.delete(`/users/${id}`);
       alert("🗑️ Đã xóa user thành công!");
-      onUserUpdated();
+      onUserUpdated(); // ✅ Refresh danh sách user
     } catch (err) {
       console.error("❌ Lỗi khi xóa user:", err);
       alert("Không thể xóa user!");
@@ -35,7 +36,7 @@ function UserList({ users, onUserUpdated }) {
       });
       alert("✅ Cập nhật thành công!");
       setEditingUser(null);
-      onUserUpdated();
+      onUserUpdated(); // ✅ Refresh danh sách sau khi sửa
     } catch (err) {
       console.error("❌ Lỗi khi cập nhật user:", err);
       alert("Lỗi khi cập nhật!");
@@ -53,6 +54,8 @@ function UserList({ users, onUserUpdated }) {
         fontFamily: "Inter, sans-serif",
       }}
     >
+      <h3 style={{ marginBottom: "15px", color: "#fff" }}>👥 Danh sách người dùng</h3>
+
       {users.length === 0 ? (
         <p style={{ color: "#9ca3af" }}>Không có user nào</p>
       ) : (
@@ -70,10 +73,45 @@ function UserList({ users, onUserUpdated }) {
                 alignItems: "center",
               }}
             >
-              <div>
-                <strong>{u.name}</strong> <br />
-                <span style={{ color: "#cbd5e1" }}>{u.email}</span>
+              <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                {/* ✅ Ảnh đại diện hoặc ký tự đầu tiên */}
+                {u.avatar ? (
+                  <img
+                    src={u.avatar}
+                    alt={u.name}
+                    width="45"
+                    height="45"
+                    style={{
+                      borderRadius: "50%",
+                      objectFit: "cover",
+                      border: "2px solid #22c55e",
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: "45px",
+                      height: "45px",
+                      borderRadius: "50%",
+                      backgroundColor: "#3b82f6",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "#fff",
+                      fontWeight: "bold",
+                      fontSize: "18px",
+                    }}
+                  >
+                    {u.name?.charAt(0).toUpperCase()}
+                  </div>
+                )}
+
+                <div>
+                  <strong>{u.name}</strong> <br />
+                  <span style={{ color: "#cbd5e1", fontSize: "14px" }}>{u.email}</span>
+                </div>
               </div>
+
               <div>
                 <button
                   onClick={() => handleEdit(u)}
@@ -85,6 +123,7 @@ function UserList({ users, onUserUpdated }) {
                     padding: "5px 10px",
                     marginRight: "8px",
                     cursor: "pointer",
+                    fontWeight: "bold",
                   }}
                 >
                   ✏️ Sửa
@@ -98,6 +137,7 @@ function UserList({ users, onUserUpdated }) {
                     borderRadius: "6px",
                     padding: "5px 10px",
                     cursor: "pointer",
+                    fontWeight: "bold",
                   }}
                 >
                   🗑️ Xóa
@@ -108,6 +148,7 @@ function UserList({ users, onUserUpdated }) {
         </ul>
       )}
 
+      {/* Form chỉnh sửa */}
       {editingUser && (
         <form
           onSubmit={handleUpdate}
@@ -119,7 +160,7 @@ function UserList({ users, onUserUpdated }) {
           }}
         >
           <h3 style={{ color: "#fff", marginBottom: "10px" }}>
-            Sửa thông tin người dùng
+            ✏️ Sửa thông tin người dùng
           </h3>
           <input
             type="text"
@@ -163,6 +204,7 @@ function UserList({ users, onUserUpdated }) {
                 padding: "8px 12px",
                 borderRadius: "6px",
                 cursor: "pointer",
+                fontWeight: "bold",
               }}
             >
               💾 Lưu
@@ -177,6 +219,7 @@ function UserList({ users, onUserUpdated }) {
                 padding: "8px 12px",
                 borderRadius: "6px",
                 cursor: "pointer",
+                fontWeight: "bold",
               }}
             >
               ❌ Hủy
@@ -187,5 +230,3 @@ function UserList({ users, onUserUpdated }) {
     </div>
   );
 }
-
-export default UserList;

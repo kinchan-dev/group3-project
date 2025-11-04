@@ -1,33 +1,58 @@
 import React, { useEffect, useState } from "react";
-import API from "../api/axios";
+import API from "../api/axios"; // ✅ Dùng interceptor
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState({});
   const [form, setForm] = useState({});
+  const [avatarFile, setAvatarFile] = useState(null);
   const [message, setMessage] = useState("");
-  const API_URL = "http://localhost:3000/api/profile";
-  const token = localStorage.getItem("token"); // ✅ thêm dòng này
+  const token = localStorage.getItem("token");
+
+  // 🔄 Lấy thông tin cá nhân
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await API.get(API_URL.replace("http://localhost:3000/api", ""));
+        const res = await API.get("/profile");
         setProfile(res.data);
         setForm(res.data);
       } catch (err) {
+        console.error(err);
         setMessage("❌ Lỗi tải thông tin cá nhân!");
       }
     };
     fetchProfile();
   }, [token]);
 
+  // 💾 Cập nhật thông tin
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
       const res = await API.put("/profile", form);
-      setMessage("✅ Cập nhật thành công!");
       setProfile(res.data.user);
+      setMessage("✅ Cập nhật thông tin thành công!");
     } catch (err) {
-      setMessage(err.response?.data?.message || "❌ Lỗi khi cập nhật!");
+      console.error(err);
+      setMessage("❌ Lỗi khi cập nhật!");
+    }
+  };
+
+  // 🖼️ Upload avatar
+  const handleAvatarUpload = async (e) => {
+    e.preventDefault();
+    if (!avatarFile) return setMessage("⚠️ Hãy chọn ảnh trước khi upload!");
+
+    const formData = new FormData();
+    formData.append("avatar", avatarFile);
+
+    try {
+      const res = await API.post("/upload-avatar", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      setProfile((prev) => ({ ...prev, avatar: res.data.avatarUrl }));
+      setMessage("✅ Ảnh đại diện đã được cập nhật!");
+    } catch (err) {
+      console.error(err);
+      setMessage("❌ Lỗi khi upload ảnh!");
     }
   };
 
@@ -45,8 +70,93 @@ export default function ProfilePage() {
         fontFamily: "Inter, sans-serif",
       }}
     >
-      <h2 style={{ marginBottom: "15px", color: "#fff" }}>Thông tin cá nhân</h2>
+      <h2 style={{ marginBottom: "15px", color: "#fff", textAlign: "center" }}>
+        👤 Thông tin cá nhân
+      </h2>
 
+      {/* Avatar hiển thị */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          flexDirection: "column",
+          marginBottom: "20px",
+        }}
+      >
+        {profile.avatar ? (
+          <img
+            src={profile.avatar}
+            alt="Avatar"
+            width="120"
+            height="120"
+            style={{
+              borderRadius: "50%",
+              objectFit: "cover",
+              border: "3px solid #22c55e",
+              marginBottom: "10px",
+            }}
+          />
+        ) : (
+          <div
+            style={{
+              width: "120px",
+              height: "120px",
+              borderRadius: "50%",
+              backgroundColor: "#3b82f6",
+              color: "white",
+              fontSize: "40px",
+              fontWeight: "bold",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              marginBottom: "10px",
+            }}
+          >
+            {profile.name ? profile.name.charAt(0).toUpperCase() : "?"}
+          </div>
+        )}
+
+        {/* Form chọn ảnh avatar */}
+        <form
+          onSubmit={handleAvatarUpload}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "10px",
+          }}
+        >
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => setAvatarFile(e.target.files[0])}
+            style={{
+              color: "#fff",
+              backgroundColor: "#1f2634",
+              border: "1px solid #3a3f4b",
+              borderRadius: "6px",
+              padding: "6px",
+            }}
+          />
+          <button
+            type="submit"
+            style={{
+              backgroundColor: "#3b82f6",
+              color: "#fff",
+              border: "none",
+              padding: "8px 16px",
+              borderRadius: "8px",
+              fontWeight: "bold",
+              cursor: "pointer",
+            }}
+          >
+            📸 Cập nhật ảnh đại diện
+          </button>
+        </form>
+      </div>
+
+      {/* Thông tin tài khoản */}
       <div
         style={{
           background: "#1b2130",
@@ -63,7 +173,10 @@ export default function ProfilePage() {
         </p>
       </div>
 
-      <h3 style={{ color: "#fff", marginBottom: "10px" }}>Cập nhật thông tin</h3>
+      {/* Form cập nhật thông tin */}
+      <h3 style={{ color: "#fff", marginBottom: "10px" }}>
+        ✏️ Cập nhật thông tin
+      </h3>
       <form
         onSubmit={handleUpdate}
         style={{
@@ -120,7 +233,7 @@ export default function ProfilePage() {
         <button
           type="submit"
           style={{
-            backgroundColor: "#28a745",
+            backgroundColor: "#22c55e",
             color: "#fff",
             border: "none",
             padding: "10px",
@@ -129,19 +242,21 @@ export default function ProfilePage() {
             cursor: "pointer",
             transition: "0.3s",
           }}
-          onMouseOver={(e) => (e.target.style.backgroundColor = "#2ecc71")}
-          onMouseOut={(e) => (e.target.style.backgroundColor = "#28a745")}
+          onMouseOver={(e) => (e.target.style.backgroundColor = "#16a34a")}
+          onMouseOut={(e) => (e.target.style.backgroundColor = "#22c55e")}
         >
-          Cập nhật
+          💾 Lưu thay đổi
         </button>
       </form>
 
+      {/* Thông báo */}
       {message && (
         <p
           style={{
             marginTop: "15px",
-            color: message.includes("✅") ? "#28a745" : "#ff4d4f",
+            color: message.includes("✅") ? "#22c55e" : "#ef4444",
             textAlign: "center",
+            fontWeight: "500",
           }}
         >
           {message}

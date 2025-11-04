@@ -1,36 +1,37 @@
 const express = require("express");
 const router = express.Router();
-const multer = require("multer");
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const { verifyToken } = require("../middleware/verifyToken");
+const { upload, resizeImage } = require("../middleware/uploadAvatar");
 const cloudinary = require("../config/cloudinary");
 const User = require("../models/User");
+const fs = require("fs");
 
-// Cấu hình lưu file lên Cloudinary
-const storage = new CloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: "avatars",
-    allowed_formats: ["jpg", "png", "jpeg"],
-  },
-});
-
-const upload = multer({ storage });
-
-// API upload avatar
-router.post("/upload-avatar", upload.single("avatar"), async (req, res) => {
+router.post("/upload-avatar", verifyToken, upload.single("avatar"), resizeImage, async (req, res) => {
   try {
-    const user = await User.findById(req.body.userId);
-    if (!user) return res.status(404).json({ message: "Không tìm thấy user" });
+    const userId = req.user.id;
+    if (!req.file) return res.status(400).json({ message: "Không có file!" });
 
-    user.avatar = req.file.path;
-    await user.save();
+    const result = await cloudinary.uploader.upload(req.file.path, {
+      folder: "avatars",
+      public_id: `user_${userId}_${Date.now()}`,
+    });
+
+    fs.unlinkSync(req.file.path); // xóa file local sau upload
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { avatar: result.secure_url },
+      { new: true }
+    );
 
     res.json({
       message: "✅ Upload thành công!",
-      avatarUrl: req.file.path,
+      avatarUrl: result.secure_url,
+      user,
     });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error(err);
+    res.status(500).json({ message: "❌ Lỗi upload avatar!" });
   }
 });
 
