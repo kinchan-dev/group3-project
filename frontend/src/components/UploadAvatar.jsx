@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import API from "../api/axios"; // ✅ Dùng API có interceptor
 
 export default function UploadAvatar() {
   const [file, setFile] = useState(null);
@@ -18,7 +18,7 @@ export default function UploadAvatar() {
     formData.append("userId", userId);
 
     try {
-      const res = await axios.post("http://localhost:3000/api/upload-avatar", formData, {
+      const res = await API.post("/upload-avatar", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setMessage("✅ Upload thành công!");
@@ -33,11 +33,7 @@ export default function UploadAvatar() {
     <div style={{ border: "1px solid #ccc", padding: "20px", borderRadius: "8px" }}>
       <h2>Tải ảnh đại diện</h2>
       <form onSubmit={handleUpload}>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={(e) => setFile(e.target.files[0])}
-        />
+        <input type="file" accept="image/*" onChange={(e) => setFile(e.target.files[0])} />
         <button type="submit" style={{ marginLeft: "10px" }}>
           Upload
         </button>
