@@ -1,10 +1,15 @@
 const express = require("express");
 const router = express.Router();
-
 const { verifyToken, isAdmin } = require("../middleware/authMiddleware");
-const { getUsers, deleteUser } = require("../controllers/userController");
+const userController = require("../controllers/userController");
 
-router.get("/", verifyToken, isAdmin, getUsers);
-router.delete("/:id", verifyToken, deleteUser);
+// ✅ GET: Lấy danh sách user (chỉ admin xem được)
+router.get("/", verifyToken, isAdmin, userController.getUsers);
+
+// ✅ PUT: Cập nhật user
+router.put("/:id", verifyToken, userController.updateUser);
+
+// ✅ DELETE: Xóa user
+router.delete("/:id", verifyToken, userController.deleteUser);
 
 module.exports = router;

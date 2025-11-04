@@ -1,6 +1,6 @@
 const User = require("../models/User");
 
-// 🟢 Lấy danh sách user (bỏ mật khẩu)
+// 🟢 Lấy danh sách user
 exports.getUsers = async (req, res) => {
   try {
     const users = await User.find().select("-password");
@@ -22,18 +22,15 @@ exports.updateUser = async (req, res) => {
     }
 
     const user = await User.findById(id);
-    if (!user) {
-      return res.status(404).json({ message: "Không tìm thấy user!" });
-    }
+    if (!user) return res.status(404).json({ message: "Không tìm thấy user!" });
 
-    // ✅ Cập nhật thông tin
     if (name) user.name = name;
     if (email) user.email = email;
     if (password && password.trim() !== "") user.password = password;
 
     await user.save();
 
-    return res.status(200).json({
+    res.status(200).json({
       message: "✅ Cập nhật user thành công!",
       user: { _id: user._id, name: user.name, email: user.email, role: user.role },
     });
