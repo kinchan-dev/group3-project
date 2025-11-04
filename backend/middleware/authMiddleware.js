@@ -7,7 +7,7 @@ exports.verifyToken = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // 👈 thêm dòng này
+    req.user = decoded; // 🟢 Dòng cực kỳ quan trọng
     next();
   } catch (err) {
     return res.status(403).json({ message: "Token không hợp lệ" });
