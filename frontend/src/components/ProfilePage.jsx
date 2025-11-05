@@ -127,17 +127,27 @@ export default function ProfilePage() {
             gap: "10px",
           }}
         >
+          <label
+            htmlFor="avatar-upload"
+            style={{
+              display: "inline-block",
+              backgroundColor: "#3b82f6",
+              color: "#fff",
+              borderRadius: "6px",
+              padding: "8px 14px",
+              cursor: "pointer",
+              
+            }}
+          >
+            Sửa
+          </label>
+f
           <input
+            id="avatar-upload"
             type="file"
             accept="image/*"
             onChange={(e) => setAvatarFile(e.target.files[0])}
-            style={{
-              color: "#fff",
-              backgroundColor: "#1f2634",
-              border: "1px solid #3a3f4b",
-              borderRadius: "6px",
-              padding: "6px",
-            }}
+            style={{ display: "none" }}
           />
           <button
             type="submit"

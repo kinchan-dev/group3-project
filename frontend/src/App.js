@@ -4,17 +4,18 @@ import SignupForm from "./components/SignupForm";
 import ForgotPassword from "./components/ForgotPassword";
 import ProfilePage from "./components/ProfilePage";
 import AdminUserList from "./components/AdminUserList";
-import UploadAvatar from "./components/UploadAvatar";
 import "./App.css";
 
 function App() {
   const [activeForm, setActiveForm] = useState("login");
-  const [activeTab, setActiveTab] = useState("profile");
+  const [activeTab, setActiveTab] = useState(() => localStorage.getItem("activeTab") || "profile");
   const [role, setRole] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isChecking, setIsChecking] = useState(true); // ⏳ Trạng thái đang kiểm tra đăng nhập
 
+  // 🔍 Kiểm tra token mỗi khi load lại trang
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("accessToken");
     const savedRole = localStorage.getItem("role");
 
     if (token) {
@@ -24,7 +25,14 @@ function App() {
       setIsLoggedIn(false);
       setActiveForm("login");
     }
+
+    setIsChecking(false); // ✅ Kết thúc quá trình kiểm tra
   }, []);
+
+  // 💾 Lưu tab đang mở để khi F5 vẫn giữ nguyên
+  useEffect(() => {
+    localStorage.setItem("activeTab", activeTab);
+  }, [activeTab]);
 
   const handleLoginSuccess = (userRole) => {
     setIsLoggedIn(true);
@@ -37,7 +45,16 @@ function App() {
     setActiveForm("login");
   };
 
-  // 🟢 Nếu chưa đăng nhập
+  // 🌀 Loading khi đang kiểm tra token
+  if (isChecking) {
+    return (
+      <div className="auth-container" style={{ textAlign: "center", marginTop: "100px" }}>
+        <h2 style={{ color: "#22c55e" }}>⏳ Đang tải thông tin người dùng...</h2>
+      </div>
+    );
+  }
+
+  // 🚪 Nếu chưa đăng nhập → Hiển thị form auth
   if (!isLoggedIn) {
     return (
       <div className="auth-container">
@@ -83,64 +100,46 @@ function App() {
     );
   }
 
-  // ✅ Sau khi đăng nhập
+  // ✅ Sau khi đăng nhập thành công
   return (
     <div className="dashboard-container">
-      <h2 className="dashboard-title">
-        {role === "admin"
-          ? "👑 Admin Dashboard"
-          : role === "moderator"
-          ? "🛡️ Moderator Panel"
-          : "👤 User Profile"}
-      </h2>
+      <h2 className="dashboard-title">⚙️ Quản Lý Người Dùng</h2>
 
-      {/* 🧭 Navbar phân quyền */}
+      {/* 🔹 Thanh điều hướng */}
       <div className="dashboard-nav">
-        {/* ✅ Admin và Moderator mới thấy "Quản lý User" */}
         {(role === "admin" || role === "moderator") && (
           <span
             className={activeTab === "users" ? "active-tab" : ""}
             onClick={() => setActiveTab("users")}
           >
-            Quản lý User
+            👥 Quản lý User
           </span>
         )}
 
-        {/* ✅ Tất cả đều có thể xem Profile */}
         <span
           className={activeTab === "profile" ? "active-tab" : ""}
           onClick={() => setActiveTab("profile")}
         >
-          Profile
+          🙍 Hồ sơ cá nhân
         </span>
 
-        {/* ✅ Moderator và Admin có thể upload avatar */}
-        {(role === "admin" || role === "moderator" || role === "user") && (
-          <span
-            className={activeTab === "upload" ? "active-tab" : ""}
-            onClick={() => setActiveTab("upload")}
-          >
-            Upload Avatar
-          </span>
-        )}
-
         <button className="logout-btn" onClick={handleLogout}>
-          Đăng xuất
+          🚪 Đăng xuất
         </button>
       </div>
 
-      {/* ⚙️ Nội dung thay đổi theo tab */}
-      <div className="dashboard-card">
-        {/* ✅ Profile */}
-        {activeTab === "profile" && <ProfilePage />}
+      {/* 🔸 Nội dung từng tab */}
+      {activeTab === "profile" && (
+        <div className="dashboard-card">
+          <ProfilePage />
+        </div>
+      )}
 
-        {/* ✅ Admin và Moderator: danh sách user */}
-        {activeTab === "users" &&
-          (role === "admin" || role === "moderator") && <AdminUserList />}
-
-        {/* ✅ Upload Avatar: cho tất cả */}
-        {activeTab === "upload" && <UploadAvatar />}
-      </div>
+      {activeTab === "users" && (role === "admin" || role === "moderator") && (
+        <div className="dashboard-card">
+          <AdminUserList />
+        </div>
+      )}
     </div>
   );
 }
