@@ -117,7 +117,9 @@ cd backend
 npm install
 node server.js
 
-2️⃣ Frontend
+---
+
+### 2️⃣ Frontend
 ```bash
 cd frontend
 npm install
