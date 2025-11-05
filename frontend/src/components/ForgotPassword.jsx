@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import API from "../api/axios"; // ✅ API có interceptor
+import API from "../api/axios";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "../App.css";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
@@ -8,14 +10,11 @@ export default function ForgotPassword() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setLoading(true);
     setMessage("");
 
     try {
-      // ✅ Gọi API gửi email đặt lại mật khẩu
       const res = await API.post("/auth/forgot-password", { email });
-
       setMessage("✅ " + res.data.message);
     } catch (err) {
       setMessage(err.response?.data?.message || "❌ Lỗi khi gửi email!");
@@ -25,74 +24,63 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div
-      style={{
-        backgroundColor: "#131720",
-        padding: "30px",
-        borderRadius: "12px",
-        color: "white",
-        boxShadow: "0 0 20px rgba(0,0,0,0.4)",
-        textAlign: "center",
-      }}
-    >
-      <h3 style={{ marginBottom: "10px", color: "#22c55e" }}>🔑 Quên mật khẩu</h3>
-      <p style={{ color: "#cbd5e1", marginBottom: "20px" }}>
-        Nhập email của bạn để nhận liên kết đặt lại mật khẩu.
-      </p>
-
-      <form
-        onSubmit={handleSubmit}
-        style={{ display: "flex", flexDirection: "column", gap: "15px" }}
-      >
-        <input
-          type="email"
-          placeholder="Nhập email của bạn..."
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          style={{
-            padding: "12px",
-            borderRadius: "8px",
-            border: "1px solid #3a3f4b",
-            backgroundColor: "#1b2130",
-            color: "#fff",
-            outline: "none",
-          }}
-          onFocus={(e) => (e.target.style.borderColor = "#22c55e")}
-          onBlur={(e) => (e.target.style.borderColor = "#3a3f4b")}
-        />
-
-        <button
-          type="submit"
-          disabled={loading}
-          style={{
-            backgroundColor: loading ? "#15803d" : "#22c55e",
-            border: "none",
-            padding: "12px",
-            borderRadius: "8px",
-            color: "#fff",
-            fontWeight: "bold",
-            cursor: loading ? "not-allowed" : "pointer",
-            transition: "0.3s ease",
-          }}
-          onMouseOver={(e) => !loading && (e.target.style.backgroundColor = "#16a34a")}
-          onMouseOut={(e) => !loading && (e.target.style.backgroundColor = "#22c55e")}
-        >
-          {loading ? "⏳ Đang gửi..." : "Gửi email đặt lại mật khẩu"}
-        </button>
-      </form>
-
-      {message && (
-        <p
-          style={{
-            marginTop: "20px",
-            color: message.includes("✅") ? "#22c55e" : "#ef4444",
-            fontWeight: "500",
-          }}
-        >
-          {message}
+    <div className="container d-flex justify-content-center align-items-center">
+      <div>
+        <h3 className="text-center text-success mb-3">
+          <i className="fa-solid fa-unlock-keyhole me-2"></i> Quên mật khẩu
+        </h3>
+        <p className="text-center text-muted mb-4">
+          Nhập email của bạn để nhận liên kết đặt lại mật khẩu 📧
         </p>
-      )}
+
+        <form onSubmit={handleSubmit}>
+          {/* Nhập email */}
+          <div className="mb-3">
+            <label className="form-label fw-semibold">Email</label>
+            <div className="input-group">
+              <span className="input-group-text bg-light">
+                <i className="fa-solid fa-envelope text-success"></i>
+              </span>
+              <input
+                type="email"
+                className="form-control"
+                placeholder="Nhập email của bạn..."
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+          </div>
+
+          {/* Nút gửi */}
+          <button
+            type="submit"
+            className="btn btn-success w-100 py-2 fw-semibold"
+            disabled={loading}
+          >
+            {loading ? (
+              <>
+                <i className="fa-solid fa-spinner fa-spin me-2"></i> Đang gửi...
+              </>
+            ) : (
+              <>
+                <i className="fa-solid fa-paper-plane me-2"></i> Gửi email đặt lại mật khẩu
+              </>
+            )}
+          </button>
+        </form>
+
+        {/* Thông báo */}
+        {message && (
+          <div
+            className={`alert mt-4 text-center ${
+              message.includes("✅") ? "alert-success" : "alert-danger"
+            }`}
+          >
+            {message}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import API from "../api/axios"; // ✅ Dùng interceptor
+import API from "../api/axios";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "../App.css";
 
 export default function ProfilePage() {
   const [profile, setProfile] = useState({});
@@ -56,222 +58,188 @@ export default function ProfilePage() {
     }
   };
 
+  // 🚪 Đăng xuất
+  const handleLogout = () => {
+    localStorage.clear();
+    window.location.href = "/";
+  };
+
   return (
-    <div
-      className="profile-container"
-      style={{
-        backgroundColor: "#131720",
-        color: "white",
-        borderRadius: "12px",
-        padding: "25px",
-        boxShadow: "0 0 15px rgba(0,0,0,0.4)",
-        maxWidth: "700px",
-        margin: "0 auto",
-        fontFamily: "Inter, sans-serif",
-      }}
-    >
-      <h2 style={{ marginBottom: "15px", color: "#fff", textAlign: "center" }}>
-        👤 Thông tin cá nhân
-      </h2>
+    <div className="container d-flex justify-content-center align-items-center min-vh-100 position-relative">
+      {/* 🔘 Nút đăng xuất cố định ở góc phải */}
+      <button
+        onClick={handleLogout}
+        className="btn btn-danger position-absolute fw-semibold shadow-sm"
+        style={{
+          top: "20px",
+          right: "30px",
+          borderRadius: "30px",
+          padding: "8px 18px",
+          transition: "0.3s",
+        }}
+        onMouseEnter={(e) => (e.target.style.backgroundColor = "#dc2626")}
+        onMouseLeave={(e) => (e.target.style.backgroundColor = "#ef4444")}
+      >
+        🚪 Đăng xuất
+      </button>
 
-      {/* Avatar hiển thị */}
+      {/* Thẻ hồ sơ */}
       <div
+        className="card shadow-lg border-0 p-4"
         style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          flexDirection: "column",
-          marginBottom: "20px",
+          width: "600px",
+          borderRadius: "20px",
+          backgroundColor: "#f9fafb",
         }}
       >
-        {profile.avatar ? (
-          <img
-            src={profile.avatar}
-            alt="Avatar"
-            width="120"
-            height="120"
-            style={{
-              borderRadius: "50%",
-              objectFit: "cover",
-              border: "3px solid #22c55e",
-              marginBottom: "10px",
-            }}
-          />
-        ) : (
-          <div
-            style={{
-              width: "120px",
-              height: "120px",
-              borderRadius: "50%",
-              backgroundColor: "#3b82f6",
-              color: "white",
-              fontSize: "40px",
-              fontWeight: "bold",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              marginBottom: "10px",
-            }}
-          >
-            {profile.name ? profile.name.charAt(0).toUpperCase() : "?"}
-          </div>
-        )}
+        {/* Header */}
+        <h3 className="text-center text-success mb-4">
+          <i className="fa-solid fa-user-circle me-2"></i> Hồ sơ cá nhân
+        </h3>
 
-        {/* Form chọn ảnh avatar */}
-        <form
-          onSubmit={handleAvatarUpload}
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "10px",
-          }}
-        >
-          <label
-            htmlFor="avatar-upload"
-            style={{
-              display: "inline-block",
-              backgroundColor: "#3b82f6",
-              color: "#fff",
-              borderRadius: "6px",
-              padding: "8px 14px",
-              cursor: "pointer",
-              
-            }}
-          >
-            Sửa
-          </label>
+        {/* Upload avatar */}
+        <div className="text-center mb-4">
+          {profile.avatar ? (
+            <img
+              src={profile.avatar}
+              alt="Avatar"
+              className="rounded-circle border border-3 border-success"
+              width="130"
+              height="130"
+              style={{ objectFit: "cover", transition: "0.3s" }}
+            />
+          ) : (
+            <div
+              className="rounded-circle bg-success text-white d-flex align-items-center justify-content-center"
+              style={{
+                width: "130px",
+                height: "130px",
+                fontSize: "50px",
+                margin: "0 auto",
+              }}
+            >
+              {profile.name ? profile.name.charAt(0).toUpperCase() : "?"}
+            </div>
+          )}
 
-          <input
-            id="avatar-upload"
-            type="file"
-            accept="image/*"
-            onChange={(e) => setAvatarFile(e.target.files[0])}
-            style={{ display: "none" }}
-          />
-          <button
-            type="submit"
-            style={{
-              backgroundColor: "#3b82f6",
-              color: "#fff",
-              border: "none",
-              padding: "8px 16px",
-              borderRadius: "8px",
-              fontWeight: "bold",
-              cursor: "pointer",
-            }}
-          >
-            📸 Cập nhật ảnh đại diện
-          </button>
-        </form>
-      </div>
+          {/* Form upload ảnh */}
+          <form onSubmit={handleAvatarUpload} className="mt-4">
+            <div className="d-flex justify-content-center align-items-center gap-2">
+              {/* Nút chọn ảnh tùy chỉnh */}
+              <label
+                htmlFor="avatarUpload"
+                className="btn btn-outline-success fw-semibold shadow-sm"
+                style={{
+                  borderRadius: "30px",
+                  padding: "8px 18px",
+                  cursor: "pointer",
+                  transition: "0.3s",
+                }}
+                onMouseEnter={(e) =>
+                  (e.target.style.backgroundColor = "rgba(34,197,94,0.1)")
+                }
+                onMouseLeave={(e) => (e.target.style.backgroundColor = "transparent")}
+              >
+                <i className="fa-solid fa-image me-2"></i> Chọn ảnh
+              </label>
 
-      {/* Thông tin tài khoản */}
-      <div
-        style={{
-          background: "#1b2130",
-          padding: "15px 20px",
-          borderRadius: "8px",
-          marginBottom: "20px",
-        }}
-      >
-        <p>
-          <strong>Tên:</strong> {profile.name}
-        </p>
-        <p>
-          <strong>Email:</strong> {profile.email}
-        </p>
-      </div>
+              {/* Input file ẩn */}
+              <input
+                id="avatarUpload"
+                type="file"
+                accept="image/*"
+                onChange={(e) => setAvatarFile(e.target.files[0])}
+                style={{ display: "none" }}
+              />
 
-      {/* Form cập nhật thông tin */}
-      <h3 style={{ color: "#fff", marginBottom: "10px" }}>
-        ✏️ Cập nhật thông tin
-      </h3>
-      <form
-        onSubmit={handleUpdate}
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "12px",
-        }}
-      >
-        <div style={{ display: "flex", gap: "10px" }}>
-          <input
-            placeholder="Tên mới"
-            value={form.name || ""}
-            onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="form-control"
-            style={{
-              flex: 1,
-              padding: "10px",
-              borderRadius: "6px",
-              border: "1px solid #3a3f4b",
-              backgroundColor: "#1f2634",
-              color: "#fff",
-            }}
-          />
-          <input
-            placeholder="Email"
-            value={form.email || ""}
-            onChange={(e) => setForm({ ...form, email: e.target.value })}
-            className="form-control"
-            style={{
-              flex: 1,
-              padding: "10px",
-              borderRadius: "6px",
-              border: "1px solid #3a3f4b",
-              backgroundColor: "#1f2634",
-              color: "#fff",
-            }}
-          />
+              {/* Nút upload */}
+              <button
+                type="submit"
+                className="btn btn-success fw-semibold shadow-sm"
+                style={{ borderRadius: "30px", padding: "8px 18px" }}
+              >
+                <i className="fa-solid fa-upload me-2"></i> Tải lên
+              </button>
+            </div>
+
+            {/* Hiển thị tên file ảnh được chọn */}
+            {avatarFile && (
+              <p className="text-muted mt-2 small">
+                <i className="fa-solid fa-check text-success me-1"></i>
+                {avatarFile.name}
+              </p>
+            )}
+          </form>
         </div>
 
-        <input
-          type="password"
-          placeholder="Mật khẩu mới"
-          onChange={(e) => setForm({ ...form, password: e.target.value })}
-          className="form-control"
-          style={{
-            padding: "10px",
-            borderRadius: "6px",
-            border: "1px solid #3a3f4b",
-            backgroundColor: "#1f2634",
-            color: "#fff",
-          }}
-        />
+        {/* Thông tin tài khoản */}
+        <div className="mb-4 p-3 rounded" style={{ backgroundColor: "#e9f5ee" }}>
+          <p className="mb-1">
+            <strong>👤 Họ tên:</strong> {profile.name || "Chưa có"}
+          </p>
+          <p className="mb-0">
+            <strong>📧 Email:</strong> {profile.email || "Chưa có"}
+          </p>
+        </div>
 
-        <button
-          type="submit"
-          style={{
-            backgroundColor: "#22c55e",
-            color: "#fff",
-            border: "none",
-            padding: "10px",
-            borderRadius: "8px",
-            fontWeight: "bold",
-            cursor: "pointer",
-            transition: "0.3s",
-          }}
-          onMouseOver={(e) => (e.target.style.backgroundColor = "#16a34a")}
-          onMouseOut={(e) => (e.target.style.backgroundColor = "#22c55e")}
-        >
-          💾 Lưu thay đổi
-        </button>
-      </form>
+        {/* Form cập nhật thông tin */}
+        <h5 className="text-success mb-3">
+          <i className="fa-solid fa-pen-to-square me-2"></i> Cập nhật thông tin
+        </h5>
 
-      {/* Thông báo */}
-      {message && (
-        <p
-          style={{
-            marginTop: "15px",
-            color: message.includes("✅") ? "#22c55e" : "#ef4444",
-            textAlign: "center",
-            fontWeight: "500",
-          }}
-        >
-          {message}
-        </p>
-      )}
+        <form onSubmit={handleUpdate}>
+          <div className="row mb-3">
+            <div className="col">
+              <label className="form-label">Tên</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Tên mới..."
+                value={form.name || ""}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+              />
+            </div>
+            <div className="col">
+              <label className="form-label">Email</label>
+              <input
+                type="email"
+                className="form-control"
+                placeholder="Email..."
+                value={form.email || ""}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+              />
+            </div>
+          </div>
+
+          <div className="mb-3">
+            <label className="form-label">Mật khẩu mới</label>
+            <input
+              type="password"
+              className="form-control"
+              placeholder="Nhập mật khẩu mới..."
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+            />
+          </div>
+
+          <button
+            type="submit"
+            className="btn btn-success w-100 py-2 fw-semibold"
+          >
+            💾 Lưu thay đổi
+          </button>
+        </form>
+
+        {/* Thông báo */}
+        {message && (
+          <div
+            className={`alert mt-4 text-center ${
+              message.includes("✅") ? "alert-success" : "alert-danger"
+            }`}
+          >
+            {message}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
