@@ -115,4 +115,10 @@ Repo main chạy ổn định cả frontend + backend.
 ```bash
 cd backend
 npm install
+node server.js
+
+### 2️⃣ Frontend 
+```bash
+cd frontend
+npm install
 npm start
