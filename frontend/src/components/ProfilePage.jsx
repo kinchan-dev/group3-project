@@ -141,7 +141,7 @@ export default function ProfilePage() {
           >
             Sửa
           </label>
-f
+
           <input
             id="avatar-upload"
             type="file"
