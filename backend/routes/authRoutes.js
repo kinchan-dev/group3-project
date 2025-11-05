@@ -2,8 +2,10 @@ const express = require("express");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
 const RefreshToken = require("../models/RefreshToken");
+const loginLimiter = require("../middleware/rateLimiter");
+const logActivity = require("../middleware/logActivity");
 
-// Import toàn bộ controller
+// 🧩 Import toàn bộ controller
 const {
   signup,
   login,
@@ -15,9 +17,20 @@ const {
 // ===================
 // 🔐 AUTH BASIC ROUTES
 // ===================
-router.post("/signup", signup);
-router.post("/login", login);
-router.post("/logout", logout);
+router.post("/signup", async (req, res, next) => {
+  await logActivity(null, "Signup request", req);
+  next();
+}, signup);
+
+router.post("/login", loginLimiter, async (req, res, next) => {
+  await logActivity(null, "Login attempt", req);
+  next();
+}, login);
+
+router.post("/logout", async (req, res, next) => {
+  await logActivity(req.userId, "Logout", req);
+  next();
+}, logout);
 
 // ===================
 // 🔄 REFRESH TOKEN
@@ -57,7 +70,7 @@ router.post("/refresh", async (req, res) => {
 });
 
 // ===================
-// 🧹 REVOKE TOKEN (LOGOUT TOÀN HỆ THỐNG)
+// 🧹 REVOKE TOKEN (Đăng xuất toàn hệ thống)
 // ===================
 router.post("/logout/revoke", async (req, res) => {
   const { token } = req.body;
@@ -74,5 +87,7 @@ router.post("/logout/revoke", async (req, res) => {
 router.post("/forgot-password", forgotPassword);
 router.post("/reset-password/:token", resetPassword);
 
-// Export router
+// ===================
+// 🧾 EXPORT
+// ===================
 module.exports = router;
