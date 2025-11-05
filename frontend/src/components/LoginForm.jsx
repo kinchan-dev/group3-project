@@ -1,58 +1,29 @@
 import React, { useState } from "react";
-import axios from "axios";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../redux/authSlice";
 
-export default function LoginForm({ onLoginSuccess }) {
-  const [form, setForm] = useState({ email: "", password: "" });
-  const [message, setMessage] = useState("");
-  const API_URL = "http://localhost:3000/api";
+export default function LoginForm() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state) => state.auth);
 
-  const handleLogin = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    try {
-      const res = await axios.post(`${API_URL}/auth/login`, form);
-
-      // ✅ Lưu cả accessToken và refreshToken
-      localStorage.setItem("accessToken", res.data.accessToken);
-      localStorage.setItem("refreshToken", res.data.refreshToken);
-      localStorage.setItem("role", res.data.role);
-      localStorage.setItem("userId", res.data.userId);
-      localStorage.setItem("role", res.data.role);
-      
-
-      setMessage("✅ Đăng nhập thành công!");
-      setTimeout(() => {
-        onLoginSuccess(res.data.role);
-      }, 1000);
-    } catch (err) {
-      setMessage(err.response?.data?.message || "❌ Lỗi kết nối!");
-    }
+    dispatch(loginUser({ email, password }));
   };
 
   return (
-    <form onSubmit={handleLogin} className="auth-form">
+    <form className="auth-form" onSubmit={handleSubmit}>
+      <h3>🔐 Đăng nhập</h3>
       <label>Email</label>
-      <input
-        type="email"
-        placeholder="Email"
-        value={form.email}
-        onChange={(e) => setForm({ ...form, email: e.target.value })}
-        required
-      />
-
+      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} required />
       <label>Mật khẩu</label>
-      <input
-        type="password"
-        placeholder="Mật khẩu"
-        value={form.password}
-        onChange={(e) => setForm({ ...form, password: e.target.value })}
-        required
-      />
-
-      <button type="submit">Đăng nhập</button>
-
-      {message && (
-        <p className="auth-message">{message}</p>
-      )}
+      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
+      <button type="submit" disabled={loading}>
+        {loading ? "⏳ Đang xử lý..." : "Đăng nhập"}
+      </button>
+      {error && <p className="error">{error}</p>}
     </form>
   );
 }
