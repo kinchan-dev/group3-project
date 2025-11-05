@@ -6,6 +6,7 @@ const connectDB = require("./config/db");
 const profileRoutes = require("./routes/profileRoutes");
 const userRoutes = require("./routes/userRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
+const logRoutes = require("./routes/logRoutes");
 
 
 // 🟢 Import đúng router mới
@@ -24,6 +25,8 @@ app.use("/api/profile", profileRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api", require("./routes/passwordRoutes"));
 app.use("/api", uploadRoutes);
+app.use("/api/logs", logRoutes);
+
 
 
 // Chạy server
