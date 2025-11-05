@@ -6,21 +6,49 @@ import ResetPassword from "./components/ResetPassword";
 import reportWebVitals from "./reportWebVitals";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 
-// 🟢 Thêm React Router
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { Provider } from "react-redux";
+import store from "./redux/store";
+
+// ✅ Import thêm các component được dùng trong route
+import ProtectedRoute from "./components/ProtectedRoute";
+import AdminUserList from "./components/AdminUserList";
+import ProfilePage from "./components/ProfilePage";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <Router>
-      <Routes>
-        {/* Route trang chính */}
-        <Route path="/" element={<App />} />
+    <Provider store={store}>
+      <Router>
+        <Routes>
+          {/* Trang chính */}
+          <Route path="/" element={<App />} />
 
-        {/* Route khi người dùng bấm link trong email */}
-        <Route path="/reset-password/:token" element={<ResetPassword />} />
-      </Routes>
-    </Router>
+          {/* Trang reset mật khẩu */}
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
+
+          {/* ✅ Trang dành cho admin */}
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute roles={["admin"]}>
+                <AdminUserList />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* ✅ Trang dành cho user đã đăng nhập */}
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </Router>
+    </Provider>
   </React.StrictMode>
 );
 
