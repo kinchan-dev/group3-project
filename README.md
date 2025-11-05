@@ -93,3 +93,26 @@ Thành viên thứ 3 (reviewer) review & merge vào main.
 
 Kết quả cuối:
 Repo main chạy ổn định cả frontend + backend.
+
+# Website hỗ trợ tư vấn tâm lý (Full Stack App)
+
+## 🚀 Chức năng chính
+- Đăng ký, đăng nhập, refresh token
+- Đặt lại mật khẩu qua email
+- Upload avatar người dùng
+- Ghi log hoạt động người dùng (rate limit)
+- Quản lý quyền: Admin / Moderator / User
+- Protected Routes trên frontend bằng Redux Toolkit
+
+## 🧩 Công nghệ sử dụng
+- Backend: Node.js, Express, MongoDB
+- Frontend: React, Redux Toolkit, React Router
+- Thư viện: bcryptjs, jsonwebtoken, express-rate-limit, nodemailer
+
+## 🧪 Cách chạy dự án
+
+### 1️⃣ Backend
+```bash
+cd backend
+npm install
+npm start
