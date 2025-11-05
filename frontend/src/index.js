@@ -14,6 +14,8 @@ import store from "./redux/store";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminUserList from "./components/AdminUserList";
 import ProfilePage from "./components/ProfilePage";
+import ModeratorPage from "./components/ModeratorPage";
+
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -33,6 +35,15 @@ root.render(
             element={
               <ProtectedRoute roles={["admin"]}>
                 <AdminUserList />
+              </ProtectedRoute>
+            }
+          />
+
+          <Route
+            path="/moderator"
+            element={
+              <ProtectedRoute allowedRoles={["Admin", "Moderator"]}>
+                <ModeratorPage />
               </ProtectedRoute>
             }
           />
