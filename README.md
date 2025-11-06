@@ -1,124 +1,164 @@
-# 🌐 Hệ thống Quản lý & Đăng nhập Người dùng (Group 3 Project)
+# ✅ **Ứng dụng Web MERN Stack: Quản lý Người dùng Nâng cao**
 
-## 🧭 Giới thiệu
-Dự án mô phỏng hệ thống quản lý tài khoản người dùng với các tính năng cơ bản và nâng cao:
-- Đăng ký / Đăng nhập / Đăng xuất
-- Xem & cập nhật thông tin cá nhân (Profile)
-- Phân quyền (User / Admin)
-- Quên mật khẩu & Đặt lại mật khẩu (Token)
-- Upload ảnh đại diện (Cloudinary)
-- Admin quản lý danh sách người dùng
+Chào mừng đến với dự án cuối kỳ của **Nhóm 3**. Đây là một ứng dụng Full-stack hoàn chỉnh được xây dựng bằng **MERN Stack** (MongoDB, Express.js, React, Node.js), tập trung vào các tính năng xác thực và quản lý người dùng bảo mật và chuyên nghiệp.
 
 ---
 
-## ⚙️ Công nghệ sử dụng
-| Thành phần | Công nghệ |
-|-------------|------------|
-| Backend | Node.js + Express + MongoDB (Mongoose) |
-| Frontend | React (Bootstrap 5) |
-| Xác thực | JWT + bcryptjs |
-| Upload ảnh | Cloudinary API |
-| Công cụ test | Postman |
-| Quản lý mã nguồn | GitHub + Git Flow |
+# ✨ **Tính năng chính**
+
+Ứng dụng mang đến hệ thống User Management toàn diện với nhiều chức năng nâng cao.
+
+## 👨‍💻 **Chức năng cho Người dùng**
+
+* Xác thực: Đăng ký, Đăng nhập, Đăng xuất
+* Quản lý phiên đăng nhập bằng **Access Token + Refresh Token**
+* Quản lý tài khoản: cập nhật thông tin cá nhân
+* Upload Avatar: upload và xử lý ảnh với **Cloudinary**
+* Bảo mật cấp cao:
+
+  * Quên mật khẩu
+  * Đặt lại mật khẩu qua email thật (Gmail + SMTP)
 
 ---
 
-## 🚀 Hướng dẫn cài đặt & chạy project
+## 👮‍♂️ **Chức năng cho Quản trị viên**
 
-### 1️⃣ Clone repo về máy
+* Hệ thống phân quyền **RBAC** gồm: User, Moderator, Admin
+* Quản lý người dùng toàn hệ thống
+* Xóa tài khoản (chỉ Admin)
+* Xem nhật ký hoạt động chi tiết
+
+---
+
+## 🛡️ **Các lớp bảo mật**
+
+* Mật khẩu được băm bằng **bcryptjs**
+* API bảo vệ bởi **JWT**
+* Chống brute force đăng nhập bằng **express-rate-limit**
+* Protected Routes trên frontend dựa vào role + trạng thái đăng nhập
+
+---
+
+# 🖥️ **Frontend**
+
+* Sử dụng **React + Redux Toolkit** quản lý state
+* Giao diện tự động ẩn/hiện tính năng theo vai trò user
+
+---
+
+# 🛠️ **Công nghệ sử dụng**
+
+### **Backend**
+
+Node.js, Express.js, Multer, Sharp, Cloudinary SDK, Nodemailer, JWT, bcryptjs, cors, express-rate-limit
+
+### **Frontend**
+
+React, Redux Toolkit, Axios
+
+### **Database**
+
+MongoDB Atlas
+
+### **Môi trường**
+
+dotenv
+
+---
+
+# 🚀 **Hướng dẫn Cài đặt và Chạy dự án**
+
+## ✅ 1. Yêu cầu
+
+* Node.js v16+
+* npm
+* Git
+* Tài khoản MongoDB Atlas
+* Tài khoản Cloudinary
+* Gmail bật xác minh 2 bước và có App Password
+
+---
+
+## ✅ 2. Clone Project
+
+```sh
 git clone https://github.com/kinchan-dev/group3-project.git
 cd group3-project
-2️⃣ Cài đặt thư viện
-cd backend
-npm install
-cd ../frontend
-npm install
-3️⃣ Chạy server & client
-Mở 2 terminal song song:
+```
 
-Backend
-cd backend
-node server.js
-
-
-Server sẽ chạy tại:
-👉 http://localhost:3000
-
-Frontend
-cd frontend
-npm start
-
-
-Giao diện React sẽ chạy tại:
-👉 http://localhost:3001
-
-🧩 Các API chính (Postman test)
-Chức năng	Method	Endpoint	Ghi chú
-Đăng ký	POST	/api/auth/signup	Tạo user mới
-Đăng nhập	POST	/api/auth/login	Trả về token JWT
-Xem thông tin cá nhân	GET	/api/profile	Header: Authorization: Bearer <token>
-Cập nhật thông tin	PUT	/api/profile	Cập nhật name, email, password
-Quên mật khẩu	POST	/api/forgot-password	Gửi token reset
-Đặt lại mật khẩu	POST	/api/reset-password	Dùng token để đổi password
-Upload avatar	POST	/api/upload-avatar	FormData: avatar, userId
-🖼️ Ảnh minh họa (screenshots)
-
-Các ảnh này lưu trong thư mục /screenshots:
-
-Hình ảnh	             Mô tả
-api_signup.png	       Test API đăng ký
-api_login.png	         Test API đăng nhập
-react_profile.png	     Giao diện Profile React
-admin_dashboard.png	   Trang quản trị người dùng
-
-🎥 Video demo chức năng
-https://drive.google.com/file/d/1B2bqCDBVjqcDL6B-e7NwCd4SJEJlw5Qv/view?usp=sharing
-
-👥 Thành viên nhóm
-Họ và tên	        Vai trò	              Nhiệm vụ
-Đoàn Minh Trị	    Backend Developer	    API Auth, Forgot Password, Upload Avatar
-Trần Trung Kiên	  Frontend Developer	  React UI (SignUp, Login, Profile)
-Trần Trung Kiên	  DevOps / Reviewer	    GitHub, Pull Request, Merge, Test
-
-📝 Quy trình Git Workflow
-
-Nhánh phát triển:
-backend-auth, backend-advanced
-frontend-auth, frontend-advanced
-
-Quy trình làm việc:
-Mỗi thành viên làm việc trên nhánh riêng.
-Push code và tạo Pull Request.
-Thành viên thứ 3 (reviewer) review & merge vào main.
-
-Kết quả cuối:
-Repo main chạy ổn định cả frontend + backend.
-
-# Website hỗ trợ tư vấn tâm lý (Full Stack App)
-
-## 🚀 Chức năng chính
-- Đăng ký, đăng nhập, refresh token
-- Đặt lại mật khẩu qua email
-- Upload avatar người dùng
-- Ghi log hoạt động người dùng (rate limit)
-- Quản lý quyền: Admin / Moderator / User
-- Protected Routes trên frontend bằng Redux Toolkit
-
-## 🧩 Công nghệ sử dụng
-- Backend: Node.js, Express, MongoDB
-- Frontend: React, Redux Toolkit, React Router
-- Thư viện: bcryptjs, jsonwebtoken, express-rate-limit, nodemailer
-
-## 🧪 Cách chạy dự án
-
-### 
-```bash
-Backend
-cd backend
-npm install
-node server.js
 ---
-Frontend
+
+## ✅ 3. Cấu hình Backend
+
+```sh
+cd backend
+npm install
+```
+
+Tạo file `.env` trong thư mục backend:
+
+```
+# Server Configuration
+PORT=3000
+NODE_ENV=development
+
+# MongoDB Connection
+MONGO_URI=<chuoi_ket_noi_mongodb_atlas_cua_ban>
+
+# JWT Secrets
+JWT_SECRET=<chuoi_bi_mat>
+
+# Frontend URL
+FRONTEND_URL=http://localhost:3001
+
+# Cloudinary Credentials
+CLOUDINARY_CLOUD_NAME=<cloud_name>
+CLOUDINARY_API_KEY=<api_key>
+CLOUDINARY_API_SECRET=<api_secret>
+
+# Nodemailer (Gmail)
+EMAIL_USER=<gmail>
+EMAIL_PASS=<app_password>
+```
+
+Chạy server:
+
+```sh
+node server.js
+```
+
+---
+
+## ✅ 4. Cấu hình Frontend
+
+```sh
 cd frontend
 npm install
+```
+
+Tạo file `.env`:
+
+```
+REACT_APP_API_URL=http://localhost:3000
+```
+
+Chạy frontend:
+
+```sh
 npm start
+```
+
+Ứng dụng React chạy tại:
+
+```
+http://localhost:3001
+```
+
+---
+
+# 👥 **Thành viên Nhóm 3**
+
+| STT | Họ và Tên           | MSSV       | Vai trò                                                            |
+| --- | ------------------- | ---------- | ------------------------------------------------------------------ |
+| 1   | **Đoàn Minh Trị**   | **226320** | Trưởng nhóm, Database, Lập trình viên Backend                      |                    
+| 2   | **Trần Trung Kiên** | **220415** | Lập trình viên Frontend, Git Manager, Tester                       |
